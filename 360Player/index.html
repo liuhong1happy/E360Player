@@ -1,0 +1,31 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+   <meta charset=utf-8> 
+    <title>360度全景视频播放器</title> 
+    <style>
+        body{
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head> 
+<body> 
+    <div id="container" style="position: absolute; left:0px; top:0px;"></div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/three.js"></script>
+    <script src="js/Projector.js"></script> 
+    <script src="js/CanvasRenderer.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/360Player.js"></script>
+    <script> 
+        var player  =new IS360Palyer(document.getElementById("container"),"test.mp4");
+        player.init();
+        player.resize(window.innerWidth,window.innerHeight);
+        player.play();
+        window.onresize = function(){
+            player.resize(window.innerWidth,window.innerHeight);
+        }
+    </script> 
+</body> 
+</html>
