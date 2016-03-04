@@ -3,15 +3,90 @@
 <head> 
    <meta charset=utf-8> 
     <title>360度全景视频播放器</title> 
+    <link rel="stylesheet" href="icomoon/style.css" />
     <style>
         body{
             margin: 0px;
             overflow: hidden;
         }
+        #container{
+            position: absolute; 
+            left:0px; 
+            top:0px;
+            bottom:30px;
+        }
+        #controller{
+            position:absolute;
+            bottom:0px;
+            left:0px;
+            width:100%;
+            height:50px;
+            background-color: #333;
+            border-top: 1px solid #666;
+            box-shadow: 0px -2px 3px #000;
+        }
+        #controller #play-control{
+            width:120px;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 6px;
+            padding: 0px 10px;
+            font-size: 30px;
+            line-height: 30px;
+            color:#eee;
+        }
+        #controller #play-progress{
+            width:auto;
+            height: 100%;
+            position: absolute;
+            left: 140px;
+            top: 20px;
+            right: 100px;
+        }
+        #controller #play-looptype{
+            width:60px;
+            height: 100%;
+            position: absolute;
+            right: 0px;
+            top: 10px;
+            padding: 0px 20px;
+            font-size: 30px;
+            line-height: 30px;
+            color:#eee;
+        }
+        #controller #play-control #icon-play:before{
+            font-size: 36px;
+        }
+        #controller #play-progress #progress{
+            width: 100%;
+            background-color: #999;
+            height: 4px;
+        }
+        #controller #play-progress #timebar{
+            width: 50%;
+            background-color: darkcyan;
+            height: 4px;
+        }
     </style>
 </head> 
 <body> 
-    <div id="container" style="position: absolute; left:0px; top:0px;"></div>
+    <div id="container"></div>
+    <div id="controller">
+        <div id="play-control">
+            <span class="icon-previous"></span>
+            <span class="icon-pause" id="icon-play"></span>
+            <span class="icon-next"></span>
+        </div>
+        <div id="play-progress">
+            <div id="progress">
+                <div id="timebar"></div>
+            </div>
+        </div>
+        <div id="play-looptype">
+            <span class="icon-loop"></span>
+        </div>
+    </div>
     <script src="js/jquery.min.js"></script>
     <script src="js/three.js"></script>
     <script src="js/Projector.js"></script> 
@@ -19,13 +94,71 @@
     <script src="js/Detector.js"></script>
     <script src="js/360Player.js"></script>
     <script> 
-        var player  =new IS360Palyer(document.getElementById("container"),"test.mp4");
-        player.init();
-        player.resize(window.innerWidth,window.innerHeight);
-        player.play();
-        window.onresize = function(){
-            player.resize(window.innerWidth,window.innerHeight);
+        var $iconPlay = $("#icon-play"),$timebar = $("#timebar");
+        
+        var PlayController = function(){
+            var self = {};
+            this.playlist = ["test.mp4"];
+            this.current = {
+                video:{
+                    currentTime:0,// 视频播放到什么位置(s)
+                    src:"test.mp4",// 视频播放源 // 视频的高宽
+                    duration:3600,// 视频总长度(s)
+                    width:3600, // 视频的宽度
+                    height:7200, // 视频的高度
+                    paused:true
+                },
+                player:{
+                    loopType:"single" // 循环方式 ["单次播放视频","单视频循环","随机播放","按顺序播放"]
+                }
+            };
+            this.player = null;
+            this.initPlayer = function(){
+                var player  = new E360Palyer(document.getElementById("container"),"test.mp4");
+                player.init();
+                player.resize(window.innerWidth,window.innerHeight);
+                player.play();
+                window.onresize = function(){
+                    player.resize(window.innerWidth,window.innerHeight);
+                }
+                player.addEventListener("playing",this.onplaying)
+                self.player = player;
+            }
+            this.initController = function(){
+                $iconPlay.click(function(e){
+                    var paused = self.player.getVideoPaused();
+                    if(paused){
+                        self.player.play();
+                        $iconPlay.removeClass("icon-play2").addClass("icon-pause");
+                    }else{
+                        self.player.pause();
+                        $iconPlay.addClass("icon-play2").removeClass("icon-pause");
+                    }
+                });
+            }
+            this.init = function(){
+                self.initPlayer();
+                self.initController();
+            }
+            this.onplaying = function(){
+                var duration = self.player.getVideoDuration();
+                var currentTime = self.player.getVideoCurrentTime();
+                if(duration && !isNaN(duration) && currentTime && !isNaN(currentTime) ){
+                    $timebar.css({
+                        width: (currentTime*100/duration)+ "%"
+                    })
+                }
+            }
+            self = this;
+            return this;
         }
+        
+        var controller = PlayController();
+        controller.init();
+        
+        
+        
+        
     </script> 
 </body> 
 </html>
