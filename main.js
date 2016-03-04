@@ -19,7 +19,7 @@ if (process.platform == 'darwin') {
 function createWindow () {
   // Create the browser window.
   
-  mainWindow = new BrowserWindow({width: 800, height: 600,nodeIntegration:false,icon:icon_path});
+  mainWindow = new BrowserWindow({width: 1200, height: 800,nodeIntegration:false,icon:icon_path});
 
   // and load the index.html of the app.
 

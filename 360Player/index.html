@@ -13,7 +13,26 @@
             position: absolute; 
             left:0px; 
             top:0px;
-            bottom:30px;
+            bottom:50px;
+            height: auto;
+            width: 100%;
+        }
+        #container #video-container{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            right: 300px;
+            height: 100%;
+        }
+        #container #videolist-container{
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width:300px;
+            background-color: #333;
+            border-left: 3px solid #666;
+            box-shadow: 0px -2px 3px #000;
+            height: 100%;
         }
         #controller{
             position:absolute;
@@ -71,7 +90,10 @@
     </style>
 </head> 
 <body> 
-    <div id="container"></div>
+    <div id="container" class="list-show">
+        <div id="video-container"></div>
+        <div id="videolist-container"></div>
+    </div>
     <div id="controller">
         <div id="play-control">
             <span class="icon-previous"></span>
@@ -94,7 +116,7 @@
     <script src="js/Detector.js"></script>
     <script src="js/360Player.js"></script>
     <script> 
-        var $iconPlay = $("#icon-play"),$timebar = $("#timebar");
+        var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container")
         
         var PlayController = function(){
             var self = {};
@@ -114,12 +136,12 @@
             };
             this.player = null;
             this.initPlayer = function(){
-                var player  = new E360Palyer(document.getElementById("container"),"test.mp4");
+                var player  = new E360Palyer(document.getElementById("video-container"),"test.mp4");
                 player.init();
-                player.resize(window.innerWidth,window.innerHeight);
+                player.resize($videoContainer.width(),$videoContainer.height());
                 player.play();
                 window.onresize = function(){
-                    player.resize(window.innerWidth,window.innerHeight);
+                    player.resize($videoContainer.width(),$videoContainer.height());
                 }
                 player.addEventListener("playing",this.onplaying)
                 self.player = player;
@@ -135,6 +157,9 @@
                         $iconPlay.addClass("icon-play2").removeClass("icon-pause");
                     }
                 });
+            }
+            this.initPlayList = function(){
+                
             }
             this.init = function(){
                 self.initPlayer();
@@ -153,12 +178,9 @@
             return this;
         }
         
-        var controller = PlayController();
+        var controller = new PlayController();
         controller.init();
-        
-        
-        
-        
+
     </script> 
 </body> 
 </html>

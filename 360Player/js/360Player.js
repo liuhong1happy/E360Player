@@ -81,7 +81,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
                 renderer = new THREE.WebGLRenderer( {antialias:true} );
             else
                 renderer = new THREE.CanvasRenderer(); 
-            renderer.setSize(window.innerWidth,window.innerHeight ); 
+            renderer.setSize(parentDomElement.innerWidth,parentDomElement.innerHeight ); 
             renderer.domElement.style.cursor = "move";
             renderer.domElement.style.zIndex = 0;
             // append to body
