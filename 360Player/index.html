@@ -74,6 +74,9 @@
             line-height: 30px;
             color:#eee;
         }
+        #controller #play-control .icon{
+            cursor: pointer;
+        }
         #controller #play-control #icon-play:before{
             font-size: 36px;
         }
@@ -87,6 +90,37 @@
             background-color: darkcyan;
             height: 4px;
         }
+        
+        #container #videolist-container .video-list-item{
+            height: auto;
+            color: #aaa;
+            padding: 10px 15px;
+            position: relative;
+            left: 0px;
+            top:0px;
+            margin-top: 3px;
+            border-bottom: 1px solid #555;
+            box-shadow: 0px 1px 2px #333;
+            cursor: default;
+        }
+        #container #videolist-container .video-list-item:hover{
+            background-color: rgba(215,235,255,0.3);
+            color: #333;
+        }
+        #container #videolist-container .video-list-item .item-close{
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            height: 20px;
+            width: 20px;
+            color: #999;
+            font-size: 16px;
+            margin-top: -10px;
+            cursor: pointer;
+        }
+        #container #videolist-container .video-list-item .item-close:hover{
+             color: #fff;
+        }
     </style>
 </head> 
 <body> 
@@ -96,9 +130,9 @@
     </div>
     <div id="controller">
         <div id="play-control">
-            <span class="icon-previous"></span>
-            <span class="icon-pause" id="icon-play"></span>
-            <span class="icon-next"></span>
+            <span class="icon icon-previous" id="icon-previous"></span>
+            <span class="icon icon-pause" id="icon-play"></span>
+            <span class="icon icon-next" id="icon-next"></span>
         </div>
         <div id="play-progress">
             <div id="progress">
@@ -109,6 +143,231 @@
             <span class="icon-loop"></span>
         </div>
     </div>
+    <script>
+        const electron = require('electron');
+        const remote = electron.remote;
+        const Menu = remote.Menu;
+        const MenuItem = remote.MenuItem;
+        const ipcRenderer = electron.ipcRenderer;
+
+        var createMenu = function(){
+    var template = [
+        {
+            label:"文件" ,
+            submenu:[
+                {
+                    label:"打开视频",
+                    accelerator: 'CmdOrCtrl+O',
+                    click: function(item, focusedWindow) {
+                       var files = ipcRenderer.sendSync('sync-open-file', null); 
+                        if(files[0]){
+                            controller.addVideoToList(files[0]);
+                        }else{
+                            console.log("not file")
+                        }
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    label: '退出',
+                    accelerator: 'CmdOrCtrl+W',
+                    role: 'close'
+                }
+            ]
+        },
+      {
+        label: '播放控制',
+        submenu: [
+          {
+            label: '暂停/播放',
+            accelerator: 'CmdOrCtrl+P',
+            click: function(item, focusedWindow) {
+                controller.togglePlay();
+            }
+           },
+          {
+            label: '上一视频',
+            accelerator: 'CmdOrCtrl+L',
+            click: function(item, focusedWindow) {
+                    controller.playPrevVideo();
+            }
+          },
+          {
+            label: '下一视频',
+            aaccelerator: 'CmdOrCtrl+N',
+            click: function(item, focusedWindow) {
+               controller.playNextVideo();
+            }
+          },
+        ]
+      },
+      {
+        label: '编辑',
+        submenu: [
+          {
+            label: '撤销',
+            accelerator: 'CmdOrCtrl+Z',
+            role: 'undo'
+          },
+          {
+            label: '重做',
+            accelerator: 'Shift+CmdOrCtrl+Z',
+            role: 'redo'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: '剪切',
+            accelerator: 'CmdOrCtrl+X',
+            role: 'cut'
+          },
+          {
+            label: '复制',
+            accelerator: 'CmdOrCtrl+C',
+            role: 'copy'
+          },
+          {
+            label: '粘贴',
+            accelerator: 'CmdOrCtrl+V',
+            role: 'paste'
+          },
+          {
+            label: '全选',
+            accelerator: 'CmdOrCtrl+A',
+            role: 'selectall'
+          },
+        ]
+      },
+      {
+        label: '视图',
+        submenu: [
+          {
+            label: '刷新',
+            accelerator: 'CmdOrCtrl+R',
+            click: function(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.reload();
+            }
+          },
+          {
+            label: '切换全屏',
+            accelerator: (function() {
+              if (process.platform == 'darwin')
+                return 'Ctrl+Command+F';
+              else
+                return 'F11';
+            })(),
+            click: function(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+            }
+          },
+          {
+            label: '切换开发工具',
+            accelerator: (function() {
+              if (process.platform == 'darwin')
+                return 'Alt+Command+I';
+              else
+                return 'Ctrl+Shift+I';
+            })(),
+            click: function(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.toggleDevTools();
+            }
+          },
+        ]
+      },
+      {
+        label: '窗体',
+        role: 'window',
+        submenu: [
+          {
+            label: '最小化',
+            accelerator: 'CmdOrCtrl+M',
+            role: 'minimize'
+          },
+          {
+            label: '关闭',
+            accelerator: 'CmdOrCtrl+W',
+            role: 'close'
+          },
+        ]
+      },
+      {
+        label: '帮助',
+        role: 'help',
+        submenu: [
+          {
+            label: '了解Electron',
+            click: function() { require('electron').shell.openExternal('http://electron.atom.io') }
+          },
+        ]
+      },
+    ];
+
+    if (process.platform == 'darwin') {
+      var name = require('electron').app.getName();
+      template.unshift({
+        label: name,
+        submenu: [
+          {
+            label: 'About ' + name,
+            role: 'about'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Services',
+            role: 'services',
+            submenu: []
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Hide ' + name,
+            accelerator: 'Command+H',
+            role: 'hide'
+          },
+          {
+            label: 'Hide Others',
+            accelerator: 'Command+Alt+H',
+            role: 'hideothers'
+          },
+          {
+            label: 'Show All',
+            role: 'unhide'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Quit',
+            accelerator: 'Command+Q',
+            click: function() { app.quit(); }
+          },
+        ]
+      });
+      // Window menu.
+      template[3].submenu.push(
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Bring All to Front',
+          role: 'front'
+        }
+      );
+    }
+
+    var menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+}
+    </script>
     <script src="js/jquery.min.js"></script>
     <script src="js/three.js"></script>
     <script src="js/Projector.js"></script> 
@@ -116,12 +375,13 @@
     <script src="js/Detector.js"></script>
     <script src="js/360Player.js"></script>
     <script> 
-        var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container")
+        var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container"),$iconNext = $("#icon-next"),$iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container");
         
         var PlayController = function(){
             var self = {};
             this.playlist = ["test.mp4"];
             this.current = {
+                index:0,
                 video:{
                     currentTime:0,// 视频播放到什么位置(s)
                     src:"test.mp4",// 视频播放源 // 视频的高宽
@@ -148,22 +408,119 @@
             }
             this.initController = function(){
                 $iconPlay.click(function(e){
-                    var paused = self.player.getVideoPaused();
-                    if(paused){
-                        self.player.play();
-                        $iconPlay.removeClass("icon-play2").addClass("icon-pause");
-                    }else{
-                        self.player.pause();
-                        $iconPlay.addClass("icon-play2").removeClass("icon-pause");
-                    }
+                    self.togglePlay();
                 });
+                $iconNext.click(function(e){
+                    self.playNextVideo();
+                })
+                $iconPrevious.click(function(e){
+                    self.playPrevVideo();
+                })
             }
             this.initPlayList = function(){
-                
+                $videoList.html("");
+                if(self.playlist.length>0){
+                    for(var i=0;i<self.playlist.length;i++){
+                        var $videoListItem = $('<div class="video-list-item" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
+                        var $itemName = $('<span class="item-name" data-index="'+i+'">'+self.playlist[i]+'</span>').appendTo($videoListItem);
+                        var $itemClose = $('<span class="item-close" id="item-close-'+i+'" data-index="'+i+'">&times;</span>').appendTo($videoListItem);
+                        $itemClose.click(function(e){
+                            e = e || event;
+                            var target = e.target || e.srcElement;
+                            var index = $(target).attr("data-index");
+                            controller.removeVideoFromList(index);
+                        })
+                        $videoListItem.dblclick(function(e){
+                            e = e || event;
+                            var target = e.target || e.srcElement;
+                            var index = $(target).attr("data-index");
+                            controller.playVideoByIndex(index);
+                        })
+                    }
+                }else{
+                    $videoList.html("<span style='padding:10px;color:#999;'>暂且没有视频可以播放<span>");
+                }
             }
+            
+            this.togglePlay = function(){
+                var paused = self.player.getVideoPaused();
+                if(paused){
+                    self.player.play();
+                    $iconPlay.removeClass("icon-play2").addClass("icon-pause");
+                }else{
+                    self.player.pause();
+                    $iconPlay.addClass("icon-play2").removeClass("icon-pause");
+                }
+            }
+            this.playPrevVideo = function(){
+                if(self.playlist.length>0){
+                    var index = self.current.index;
+                    index = (index+self.playlist.length-1)%self.playlist.length;
+                    var filePath = self.playlist[index];
+                    // 修改播放器视频路径并开始播放
+                    self.player.pause();
+                    self.player.setVideoSrc(filePath);
+                    self.player.play();
+                    self.current.index = index;
+                }
+            }
+            this.playNextVideo = function(){
+                if(self.playlist.length>0){
+                    var index = self.current.index;
+                    index = (index+1)%self.playlist.length;
+                    var filePath = self.playlist[index];
+                    // 修改播放器视频路径并开始播放
+                    self.player.pause();
+                    self.player.setVideoSrc(filePath);
+                    self.player.play();
+                    self.current.index = index;
+                }
+            }
+            this.addVideoToList = function(filePath){
+                self.playlist.push(filePath);
+                // 修改播放器视频路径并开始播放
+                self.player.pause();
+                self.player.setVideoSrc(filePath);
+                self.player.play();
+                self.current.index = self.playlist.length-1;
+                
+                // 更新播放列表
+                self.initPlayList();
+            }
+            this.removeVideoFromList = function(index){
+                var i = parseInt(index);
+                self.playlist.splice(i,1);
+                if(self.current.index == i){
+                    self.player.pause();   
+                    self.current.index = self.current.index%self.playlist.length;
+                    
+                    var filePath = self.playlist[self.current.index];
+                    // 修改播放器视频路径并开始播放
+                    self.player.pause();
+                    self.player.setVideoSrc(filePath);
+                    self.player.play();
+                }
+                if(self.current.index>i){
+                     self.current.index = self.current.index-1;
+                }
+                // 更新播放列表
+                self.initPlayList();
+            }
+            
+            this.playVideoByIndex = function(index){
+                var index = parseInt(index);
+                var filePath = self.playlist[index];
+                // 修改播放器视频路径并开始播放
+                self.player.pause();
+                self.player.setVideoSrc(filePath);
+                self.player.play();
+                self.current.index = index;
+            }
+            
             this.init = function(){
                 self.initPlayer();
                 self.initController();
+                self.initPlayList();
             }
             this.onplaying = function(){
                 var duration = self.player.getVideoDuration();
@@ -180,7 +537,8 @@
         
         var controller = new PlayController();
         controller.init();
-
+        createMenu();
+        
     </script> 
 </body> 
 </html>

@@ -6,6 +6,8 @@ const electron = require('electron');
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
+const dialog = electron.dialog;
+const ipcMain = electron.ipcMain;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -16,10 +18,14 @@ if (process.platform == 'darwin') {
     app.dock.setIcon(icon_path);
 }
 
+
+
 function createWindow () {
   // Create the browser window.
   
-  mainWindow = new BrowserWindow({width: 1200, height: 800,nodeIntegration:false,icon:icon_path});
+  mainWindow = new BrowserWindow({width: 1200, height: 800,
+//                                  nodeIntegration:false,
+                                  icon:icon_path});
 
   // and load the index.html of the app.
 
@@ -56,4 +62,16 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+
+// In main process.
+
+ipcMain.on('asynchronous-message', function(event, arg) {
+  console.log(arg);  // prints "ping"
+  event.sender.send('asynchronous-reply', 'pong');
+});
+
+ipcMain.on('sync-open-file', function(event, arg) {
+  event.returnValue = dialog.showOpenDialog({ properties: [ 'openFile'],filters: [{ name: 'Movies', extensions: ['mp4'] }]})
 });
