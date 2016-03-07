@@ -1,5 +1,6 @@
 {
-  "name": "360player",
+  "name": "e360player",
+  "productName":"E360Player",
   "version": "0.1.0",
   "description": "360 player",
   "main": "main.js",

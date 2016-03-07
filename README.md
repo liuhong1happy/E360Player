@@ -1,6 +1,6 @@
-# Electron 360° Video Player
+# E360Player
 
-This is the `360° Video Player ` with [electron](https://github.com/atom/electron).
+`E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).
 
 ## Plan
 
