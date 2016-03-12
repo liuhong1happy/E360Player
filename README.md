@@ -4,8 +4,9 @@
 
 ## Plan
 
-- [ ] play loop control
-- [ ] sound control
+- [ ] play progress control
+- [ ] toggle play list
+- [ ] toggle play controller
 
 ## Develop
 
@@ -19,6 +20,11 @@
     npm run pack-osx
 
 ## Release Log
+
+#### v0.2.0
+
+- [x] play loop control
+- [x] sound control
 
 #### v0.1.0
 
