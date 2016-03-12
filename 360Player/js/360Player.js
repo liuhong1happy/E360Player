@@ -257,6 +257,12 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             getVideoPaused:function(){
                 return video.paused;
+            },
+            getVideoVolume:function(){
+                return video.volume;
+            },
+            setVideoVolume:function(volume){
+                video.volume = volume;
             }
         }
     };

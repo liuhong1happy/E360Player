@@ -64,15 +64,63 @@
             right: 100px;
         }
         #controller #play-looptype{
-            width:60px;
+            width:30px;
             height: 100%;
             position: absolute;
-            right: 0px;
+            right: 55px;
             top: 10px;
-            padding: 0px 20px;
-            font-size: 30px;
+            font-size: 24px;
             line-height: 30px;
             color:#eee;
+            cursor: pointer;
+        }
+        #controller #play-volume{
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 24px;
+            line-height: 30px;
+            color:#eee;
+            width:30px;
+            cursor: pointer;
+        }
+        #controller #play-volume #volume-container{
+            position: absolute;
+            bottom: 35px;
+            right: 10px;
+            width:20px;
+            height: 220px;
+            background-color: #eee;
+            border: 3px solid #666;
+            box-shadow: 1px 2px 3px #333,inset 0px 0px 3px #ddd;
+            display: none;
+        }
+        
+        #controller #play-volume #volume-container #volume-progress{
+            height: 200px;
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            width:10px;
+            background-color: #999;
+        }
+        #controller #play-volume #volume-container #volume-progress #volumebar{
+            position: absolute;
+            bottom: 0px;
+            height: 50%;
+            left: 0px;
+            background-color: darkcyan;
+            width: 10px;
+        }
+        #controller #play-volume #volume-container #volume-progress #volume-button{
+            position: absolute;
+            bottom: 191px;
+            left: -4px;
+            height: 16px;
+            width: 16px;
+            background-color: #ddd;
+            border: 1px solid #999;
+            border-radius: 16px;
         }
         #controller #play-control .icon{
             cursor: pointer;
@@ -140,7 +188,16 @@
             </div>
         </div>
         <div id="play-looptype">
-            <span class="icon-loop"></span>
+            <span class="icon-loop" id="loop-button"></span>
+        </div>
+        <div id="play-volume">
+            <span class="icon-volume-medium" id="icon-volume"></span>
+            <div id="volume-container">
+                <div id="volume-progress">
+                    <div id="volumebar"></div>
+                    <div id="volume-button"></div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -377,11 +434,13 @@
     <script src="js/Detector.js"></script>
     <script src="js/360Player.js"></script>
     <script> 
-        var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container"),$iconNext = $("#icon-next"),$iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container");
+        var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container"),$iconNext = $("#icon-next"),$iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container"),$volumeContainer = $("#volume-container"),$volumeProgress = $("#volume-progress"),
+            $volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),$volumeButton = $("#volume-button"),$loopButton = $("#loop-button");
         
         var PlayController = function(){
             var self = {};
             this.playlist = ["test.mp4"];
+            this.loopTypes = [{id:"all-repeat",name:"循环播放",className:"icon-loop"},{id:"order",name:"顺序播放",className:"icon-list"},{id:"shuffle",name:"随机播放",className:"icon-shuffle"},{id:"repeat-once",name:"单视频循环",className:"icon-loop2"},{id:"once",name:"单视频播放",className:"icon-switch"}]
             this.current = {
                 index:0,
                 video:{
@@ -393,7 +452,10 @@
                     paused:true
                 },
                 player:{
-                    loopType:"single" // 循环方式 ["单次播放视频","单视频循环","随机播放","按顺序播放"]
+                    loopType:"all-repeat", // 循环方式 ["循环播放","顺序播放","随机播放","单视频循环","单视频播放"]
+                    loopIndex:0,
+                    loopName:"循环播放",
+                    loopIcon:"icon-loop"
                 }
             };
             this.player = null;
@@ -443,7 +505,102 @@
                     $videoList.html("<span style='padding:10px;color:#999;'>暂且没有视频可以播放<span>");
                 }
             }
-            
+            this.initVolume = function(){
+                $iconVolume.click(function(e){
+                    $volumeContainer.toggle();
+                })
+                var volume = self.player.getVideoVolume();
+                $volumebar.css({
+                    height:volume*100+"%"
+                })
+                $volumeButton.css({
+                    bottom:volume*200-9
+                })
+                
+                var moving = false,currentBottom = 0, downPositoin = {x:0,y:0},mousePosition = {x:0,y:0};
+                var handleMouseDown = function(e){
+                    if(moving) moving = false;
+                    downPositoin = {
+                        x:e.clientX,
+                        y:e.clientY
+                    }
+                    var volume = self.player.getVideoVolume();
+                    currentBottom = volume*200-9;
+                    moving = true;
+                }
+                
+                var handleMouseMove = function(e){
+                    if(moving){
+                        mousePosition = {
+                            x:e.clientX,
+                            y:e.clientY
+                        }
+                        
+                        var dy = mousePosition.y - downPositoin.y;
+                        currentBottom = currentBottom - dy;
+                        if(currentBottom>191) { currentBottom = 191;}
+                        if(currentBottom<-9){ currentBottom= -9; }
+                        
+                        self.player.setVideoVolume((currentBottom+9)/200);
+                        $volumebar.css({
+                            height:(currentBottom+9)/200*100+"%"
+                        })
+                        $volumeButton.css({
+                            bottom:currentBottom
+                        })
+                        downPositoin = {
+                            x:e.clientX,
+                            y:e.clientY
+                        }
+                    }
+                }
+                
+                var handleMouseUp = function(e){
+                    if(moving){
+                        mousePosition = {
+                            x:e.clientX,
+                            y:e.clientY
+                        }
+                        
+                        var dy = mousePosition.y - downPositoin.y;
+                        currentBottom = currentBottom - dy;
+                        if(currentBottom>191) { currentBottom = 191;}
+                        if(currentBottom<-9){ currentBottom= -9; }
+                        
+                        self.player.setVideoVolume((currentBottom+9)/200);
+                        $volumebar.css({
+                            height:(currentBottom+9)/200*100+"%"
+                        })
+                        $volumeButton.css({
+                            bottom:currentBottom
+                        })
+                        downPositoin = {
+                            x:e.clientX,
+                            y:e.clientY
+                        }
+                        moving = false;
+                    }
+                }
+                
+                $volumeButton.mousedown(handleMouseDown);
+                $volumeButton.mousemove(handleMouseMove);
+                $volumeButton.mouseup(handleMouseUp);
+                $(window).mousemove(handleMouseMove);
+                $(window).mouseup(handleMouseUp);
+            }
+            this.initLoopType = function(){
+                $loopButton.click(function(e){
+                    var player = self.current.player;
+                    var loopTypes = self.loopTypes;
+                    $loopButton.removeClass(player.loopIcon);
+                    player.loopIndex = (player.loopIndex+1) % loopTypes.length;
+                    var loopType = loopTypes[player.loopIndex];
+                    player.loopIcon = loopType.className;
+                    player.loopName = loopType.name;
+                    player.loopType = loopType.id;
+                    $loopButton.addClass(player.loopIcon);
+                })
+            }
             this.togglePlay = function(){
                 var paused = self.player.getVideoPaused();
                 if(paused){
@@ -523,6 +680,8 @@
                 self.initPlayer();
                 self.initController();
                 self.initPlayList();
+                self.initVolume();
+                self.initLoopType();
             }
             this.onplaying = function(){
                 var duration = self.player.getVideoDuration();
