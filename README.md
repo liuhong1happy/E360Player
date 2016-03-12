@@ -10,8 +10,8 @@
 
 ## Develop
 
-    git clone git@github.com:liuhong1happy/electron-360player.git
-    cd electron-360player
+    git clone git@github.com:liuhong1happy/E360Player.git
+    cd E360Player
     npm install && npm start
 
 ## Release
