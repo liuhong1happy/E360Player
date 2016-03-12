@@ -468,6 +468,7 @@
                     player.resize($videoContainer.width(),$videoContainer.height());
                 }
                 player.addEventListener("playing",this.onplaying)
+                player.addEventListener("ended",this.onended)
                 self.player = player;
             }
             this.initController = function(){
@@ -690,6 +691,47 @@
                     $timebar.css({
                         width: (currentTime*100/duration)+ "%"
                     })
+                }
+            }
+            this.onended = function(){
+                if(self.current.player.loopType == "repeat-once") return;
+                if(self.current.player.loopType == "once"){
+                    self.player.pause();
+                    self.player.setVideoCurrentTime(0);
+                }
+                if(self.current.player.loopType == "order"){
+                    if(self.current.index==self.playlist.length-1){
+                        self.player.pause();
+                        self.player.setVideoCurrentTime(0);
+                        return;
+                    }
+                    var index = (self.current.index+1) % self.playlist.length;
+                    var src = self.playlist[index];
+                    self.player.pause();
+                    self.player.setVideoSrc(src);
+                    self.player.setVideoCurrentTime(0);
+                    self.player.play();
+                    self.current.index = index;
+                }
+                if(self.current.player.loopType == "all-repeat"){
+                    var index = (self.current.index+1) % self.playlist.length;
+                    var src = self.playlist[index];
+                    self.player.pause();
+                    self.player.setVideoSrc(src);
+                    self.player.setVideoCurrentTime(0);
+                    self.player.play();
+                    self.current.index = index;
+                }
+                
+                if(self.current.player.loopType == "shuffle"){
+                    var index = new Date().valueOf();
+                    index = (index+1) % self.playlist.length;
+                    var src = self.playlist[index];
+                    self.player.pause();
+                    self.player.setVideoSrc(src);
+                    self.player.setVideoCurrentTime(0);
+                    self.player.play();
+                    self.current.index = index;
                 }
             }
             self = this;

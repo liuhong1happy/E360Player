@@ -35,7 +35,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
         var createVideo = function(){
             video = document.createElement( 'video' );
             video.src = videoSrc;
-            video.loop = true;
+            video.loop = false;
             video.preload = "meta";
             video.load(); 
         };
@@ -217,7 +217,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             setVideoSrc:function(videoSrc){
                 video.src = videoSrc;
-                video.loop = true;
+                video.loop = false;
                 video.preload = "meta";
                 video.load(); 
             },
@@ -246,6 +246,9 @@ var E360Palyer = function(parentDomElement,videoSrc){
                 switch(type){
                     case "playing":
                         events.playing = callback;
+                        break;
+                    case "ended":
+                        video.onended = callback;
                         break;
                 }
             },
