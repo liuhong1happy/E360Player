@@ -31,7 +31,7 @@ var PreloadVideo = function(src,percent,callback){
 
 var E360Palyer = function(parentDomElement,videoSrc){
         // 全局变量
-        var video,scene,camera,renderer,toolTip,videoImageContext,videoTexture,videoImage,pauseVideo = true,events={};
+        var video,scene,camera,renderer,videoImageContext,videoTexture,videoImage,pauseVideo = true,events={};
         var createVideo = function(){
             video = document.createElement( 'video' );
             video.src = videoSrc;
@@ -39,33 +39,6 @@ var E360Palyer = function(parentDomElement,videoSrc){
             video.preload = "meta";
             video.load(); 
         };
-        var createTooltip = function(){
-            var divElement = document.createElement("div");
-
-            $(divElement).css({
-                position:"absolute",
-                left:"50%",
-                top:"50%",
-                width:"300px",
-                height:"300px",
-                marginTop:"-150px",
-                marginLeft:"-150px",
-                lineHeight:"44px",
-                textAlign:"center",
-                color:"#ddd",
-                fontSize:"16px",
-                fontWeight:"bold",
-                display:"none"
-            });
-
-            $(divElement).append('<img src="images/drag_tips.png"  style="width:100%;height:100%;"/>');
-            $(divElement).append('<span style="width:60%;position:absolute;bottom:80px;left:20%;line-height:22px;text-align:center;">请拖拽观看</span>');
-            $(divElement).mousedown(function(){
-                $(divElement).hide();
-            })
-
-            toolTip = divElement;
-        }
         var createScene = function(){
             scene = new THREE.Scene(); 
         };
@@ -86,12 +59,6 @@ var E360Palyer = function(parentDomElement,videoSrc){
             renderer.domElement.style.zIndex = 0;
             // append to body
             parentDomElement.appendChild(renderer.domElement ); 
-            parentDomElement.appendChild(toolTip);
-
-            $(parentDomElement).append('<img src="images/corner_mask_LT.png"  style="position:absolute;left:0px;top:0px;" />');
-            $(parentDomElement).append('<img src="images/corner_mask_RT.png"  style="position:absolute;right:0px;top:0px;" />');
-            $(parentDomElement).append('<img src="images/corner_mask_RB.png"  style="position:absolute;right:0px;bottom:0px;" />');
-            $(parentDomElement).append('<img src="images/corner_mask_LB.png"   style="position:absolute;left:0px;bottom:0px;" />');
         };
 
         var addSphere = function(){
@@ -159,9 +126,6 @@ var E360Palyer = function(parentDomElement,videoSrc){
             }
             renderer.render(scene, camera);
         }
-        var getTooltip = function(){
-            return toolTip;
-        }
 
         /* 鼠标操作 */
         var phiDelta = 0;
@@ -174,7 +138,6 @@ var E360Palyer = function(parentDomElement,videoSrc){
                 renderer.domElement.onmousedown = function(event){
                     isMoving = true;
                     rotateStart.set(event.clientX, event.clientY);
-                    toolTip.style.display = "none";
                 }
                 renderer.domElement.onmouseup = function(event){
                     isMoving = false;
@@ -222,7 +185,6 @@ var E360Palyer = function(parentDomElement,videoSrc){
                 video.load(); 
             },
             init:function(){
-                createTooltip();
                 createVideo();
                 createScene();
                 addCamera();
@@ -233,11 +195,6 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             resize:function(width,height){
                 renderer.setSize(width, height); 
-            },
-            toolTip:function(){
-                var toolTip = getTooltip();
-                toolTip.style.display = "block";
-                return toolTip;
             },
             setVideoCurrentTime:function(currentTime){
                 video.currentTime = currentTime;
