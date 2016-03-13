@@ -5,8 +5,8 @@
 ## Plan
 
 - [ ] play progress control
-- [ ] toggle play list
-- [ ] toggle play controller
+- [x] toggle play list
+- [x] toggle play controller
 
 ## Develop
 
