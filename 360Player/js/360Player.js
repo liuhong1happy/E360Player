@@ -44,7 +44,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
         };
         var addCamera = function(){
             // Camera
-            camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(55, 2, 10, 1000);
             camera.position.set(0,0,0);
             scene.add(camera);
         };
@@ -63,26 +63,21 @@ var E360Palyer = function(parentDomElement,videoSrc){
 
         var addSphere = function(){
             // geometry
-            var geometry =new THREE.SphereBufferGeometry(1000,32,16);
+            var geometry =new THREE.SphereBufferGeometry(1000,32,32);
             // video image
             videoImage = document.createElement( 'canvas' );
-            
-            videoImage.width = 1920;
-            videoImage.height = 960;
-            // old video
-//                    videoImage.width = 1920*2;
-//                    videoImage.height = 1920;
-
             // video image context
             videoImageContext = videoImage.getContext( '2d' );
             videoImageContext.fillStyle = '#000000';
             videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
+
             // video texture
             videoTexture = new THREE.Texture(videoImage );
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.flipY = false;
             // material
-            var material = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+            var material = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: false, side:THREE.BackSide, } );
             // sphere
             var sphere = new THREE.Mesh( geometry, material ); 
             scene.add(sphere);
@@ -120,6 +115,9 @@ var E360Palyer = function(parentDomElement,videoSrc){
             {
                 videoImage.width = video.videoWidth;
                 videoImage.height = video.videoHeight;
+                videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
+                videoImageContext.translate(videoImage.width,videoImage.height );
+                videoImageContext.rotate(Math.PI);
                 videoImageContext.drawImage(video, 0, 0 );
                 if (videoTexture) 
                     videoTexture.needsUpdate = true;
@@ -128,7 +126,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
         }
 
         /* 鼠标操作 */
-        var phiDelta = 0;
+        var phiDelta = 90;
         var thetaDelta = 90;
         var rotateStart = new THREE.Vector2();
         var rotateEnd = new THREE.Vector2();
