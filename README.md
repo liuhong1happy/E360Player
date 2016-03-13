@@ -5,8 +5,7 @@
 ## Plan
 
 - [ ] play progress control
-- [x] toggle play list
-- [x] toggle play controller
+- [ ] change the fov by mouse wheel
 
 ## Develop
 
@@ -20,6 +19,11 @@
     npm run pack-osx
 
 ## Release Log
+
+#### v0.3.0
+
+- [x] toggle play list
+- [x] toggle play controller
 
 #### v0.2.0
 
