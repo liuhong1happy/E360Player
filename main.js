@@ -21,16 +21,14 @@ if (process.platform == 'darwin') {
 function createWindow () {
   // Create the browser window.
   
-  mainWindow = new BrowserWindow({width: 1200, height: 800,
-//                                  nodeIntegration:false,
-                                  icon:icon_path});
+  mainWindow = new BrowserWindow({width: 1200, height: 800,icon:icon_path,darkTheme:true});
 
   // and load the index.html of the app.
 
   mainWindow.loadURL('file://' + __dirname + '/360Player/index.html');
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+//  mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
