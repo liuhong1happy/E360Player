@@ -4,8 +4,7 @@
 
 ## Plan
 
-- [ ] play progress control
-- [ ] change the fov by mouse wheel
+- [ ] player theme
 
 ## Develop
 
@@ -19,6 +18,11 @@
     npm run pack-osx
 
 ## Release Log
+
+#### v0.4.0
+
+- [x] play progress control
+- [x] change the fov by mouse wheel
 
 #### v0.3.0
 
