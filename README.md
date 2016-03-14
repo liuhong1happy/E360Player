@@ -8,6 +8,10 @@
 - [ ] save play list with local strage
 - [ ] flat mode
 
+## Download
+
+[百度云盘](http://pan.baidu.com/s/1RuHjg)
+
 ## Develop
 
     git clone git@github.com:liuhong1happy/E360Player.git
