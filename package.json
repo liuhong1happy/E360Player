@@ -6,7 +6,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
-    "pack-osx":"electron-packager . E360Player --platform=darwin --arch=x64 --version=0.36.9"
+    "pack-osx":"electron-packager . E360Player --platform=darwin --arch=x64 --version=0.36.9",
+    "pack-win":"electron-packager . E360Player --platform=win32 --arch=x64 --version=0.36.9",
+    "pack-linux":"electron-packager . E360Player --platform=linux --arch=x64 --version=0.36.9",
   },
   "repository": {
     "type": "git",
