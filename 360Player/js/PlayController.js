@@ -1,6 +1,6 @@
 var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container"),$iconNext = $("#icon-next"),
-    $iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container"),$volumeContainer = $("#volume-container"),
-    $volumeProgress = $("#volume-progress"),$volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),
+    $iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container"),$volumeContainer = $("#volume-container"),$playProgress = $("#play-progress"),
+    $volumeProgress = $("#volume-progress"),$volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),$timebarButton = $("#timebar-button"),
     $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller");
 
 var PlayController = function(){
@@ -47,6 +47,98 @@ var PlayController = function(){
         $iconPrevious.click(function(e){
             self.playPrevVideo();
         })
+        var hoverStatus = $iconPlay.hasClass("icon-play2");
+        $timebarButton.hover(function(e){
+            self.player.pause();
+        },function(e){
+            if(hoverStatus) self.player.pause();
+            else self.player.play();
+        })
+        
+        
+        var moving = false,currentLeft = 0, downPositoin = {x:0,y:0},mousePosition = {x:0,y:0},currentWidthSum = 0,currentDuration = 0,currentPlayStatus=true;
+        var handleMouseDown = function(e){
+            if(moving) moving = false;
+            downPositoin = {
+                x:e.clientX,
+                y:e.clientY
+            }
+            currentLeft = parseFloat($timebarButton.css("left"));
+            currentWidthSum = parseFloat($playProgress.width());
+            currentPlayStatus = $iconPlay.hasClass("icon-play2");
+            currentDuration = self.player.getVideoDuration();
+            self.player.pause();
+            moving = true;
+        }
+
+        var handleMouseMove = function(e){
+            if(moving){
+                self.player.pause();
+                
+                mousePosition = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+
+                var dx = mousePosition.x - downPositoin.x;
+                currentLeft = currentLeft + dx;
+                
+                if(currentLeft>currentWidthSum) { currentLeft = currentWidthSum;}
+                if(currentLeft<0){ currentLeft= 0; }
+                
+                var percent = currentWidthSum==0? 0: currentLeft / currentWidthSum*100;
+                self.player.setVideoCurrentTime(currentDuration*percent/100);
+                $timebarButton.css({
+                    left:percent+"%"
+                })
+                $timebar.css({
+                    width:percent+"%"
+                })
+                downPositoin = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+            }
+        }
+
+        var handleMouseUp = function(e){
+            if(moving){
+                mousePosition = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+
+                var dx = mousePosition.x - downPositoin.x;
+                currentLeft = currentLeft + dx;
+                
+                if(currentLeft>currentWidthSum) { currentLeft = currentWidthSum;}
+                if(currentLeft<0){ currentLeft= 0; }
+                
+                var percent = currentWidthSum==0? 0: currentLeft / currentWidthSum*100;
+                
+                self.player.setVideoCurrentTime(currentDuration*percent/100);
+                $timebarButton.css({
+                    left:percent+"%"
+                })
+                $timebar.css({
+                    width:percent+"%"
+                })
+                downPositoin = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+                moving = false;
+
+                if(currentPlayStatus) self.player.pause();
+                else self.player.play();
+            }
+        }
+
+        $timebarButton.mousedown(handleMouseDown);
+        $timebarButton.mousemove(handleMouseMove);
+        $timebarButton.mouseup(handleMouseUp);
+        $(window).mousemove(handleMouseMove);
+        $(window).mouseup(handleMouseUp);
     }
     this.initPlayList = function(){
         $videoList.html("");
@@ -280,6 +372,9 @@ var PlayController = function(){
         if(duration && !isNaN(duration) && currentTime && !isNaN(currentTime) ){
             $timebar.css({
                 width: (currentTime*100/duration)+ "%"
+            })
+            $timebarButton.css({
+                left: (currentTime*100/duration)+ "%"
             })
         }
     }

@@ -149,7 +149,19 @@ body{
     background-color: darkcyan;
     height: 4px;
 }
-
+#controller #play-progress #timebar-button{
+    position: absolute;
+    left: 50%;
+    top: 0px;
+    margin-top: -6px;
+    margin-left: -5px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #999;
+    background-color: #ddd;
+    border-radius: 18px;
+    cursor: move;
+}
 #container #videolist-container .video-list-item{
     height: auto;
     color: #aaa;

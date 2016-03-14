@@ -57,6 +57,13 @@ var E360Palyer = function(parentDomElement,videoSrc){
             renderer.setSize(parentDomElement.innerWidth,parentDomElement.innerHeight ); 
             renderer.domElement.style.cursor = "move";
             renderer.domElement.style.zIndex = 0;
+            renderer.domElement.onmousewheel = function(e){
+                if(e.wheelDelta>0) camera.fov += 5;
+                else camera.fov -= 5;
+                if(camera.fov>120) camera.fov = 120;
+                if(camera.fov<10) camera.fov = 10;
+                camera.updateProjectionMatrix();
+            }
             // append to body
             parentDomElement.appendChild(renderer.domElement ); 
         };
@@ -93,8 +100,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
         };
 
         var animation = function(){
-            if(pauseVideo) return;
-            if(events.playing)  events.playing(video);
+            if(events.playing && !pauseVideo)  events.playing(video);
             if(requestAnimationFrame){
                 requestAnimationFrame(animation);
             }else{
@@ -221,6 +227,15 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             setVideoVolume:function(volume){
                 video.volume = volume;
+            },
+            setVideoFov:function(fov){
+                if(fov<10) fov=10;
+                if(fov>120) fov=120;
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            },
+            getVideoFov:function(fov){
+                return camera.fov;
             }
         }
     };
