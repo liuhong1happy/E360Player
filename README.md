@@ -5,7 +5,8 @@
 ## Plan
 
 - [ ] player theme
-- [ ] local strage
+- [ ] save play list with local strage
+- [ ] flat mode
 
 ## Develop
 
