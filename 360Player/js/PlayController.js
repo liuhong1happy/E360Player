@@ -186,6 +186,7 @@ var PlayController = function(){
             // 修改播放器视频路径并开始播放
             self.player.pause();
             self.player.setVideoSrc(filePath);
+            self.togglePlay();
             self.player.play();
             self.current.index = index;
         }
@@ -198,6 +199,7 @@ var PlayController = function(){
             // 修改播放器视频路径并开始播放
             self.player.pause();
             self.player.setVideoSrc(filePath);
+            self.togglePlay();
             self.player.play();
             self.current.index = index;
         }
