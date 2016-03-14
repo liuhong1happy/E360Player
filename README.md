@@ -5,6 +5,7 @@
 ## Plan
 
 - [ ] player theme
+- [ ] local strage
 
 ## Develop
 
