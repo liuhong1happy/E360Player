@@ -1,3 +1,4 @@
 node_modules
 .DS_Store
 E360Player-darwin-x64
+npm-debug.log
