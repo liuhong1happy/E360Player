@@ -23,7 +23,7 @@
     # osx 
     npm run pack-osx
 
-## Release Log
+## Log
 
 #### v0.4.0
 
