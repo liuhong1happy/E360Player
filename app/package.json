@@ -1,0 +1,25 @@
+{
+  "name": "e360player",
+  "productName":"E360Player",
+  "version": "0.1.0",
+  "description": "360 player",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liuhong1happy/E360Player.git"
+  },
+  "keywords": [
+    "Electron",
+    "360player"
+  ],
+  "author": "liuhong1happy",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/liuhong1happy/E360Player/issues"
+  },
+  "homepage": "https://github.com/liuhong1happy/E360Player#readme",
+  "build": {
+    "app-bundle-id": "liuhong1happy",
+    "app-category-type": "public.app-category.video-player"
+  }
+}
