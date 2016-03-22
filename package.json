@@ -4,7 +4,8 @@
   "scripts": {
     "start": "electron ./app/main.js",
     "pack-osx":"electron-packager ./app E360Player --platform=darwin --arch=x64 --version=0.36.9",
-    "pack-win":"electron-packager ./app E360Player --platform=win32 --arch=x64 --version=0.36.9",
+    "pack-win32":"electron-packager ./app E360Player --platform=win32 --arch=ia32 --version=0.36.9",
+    "pack-win64":"electron-packager ./app E360Player --platform=win32 --arch=x64 --version=0.36.9",
     "pack-linux":"electron-packager ./app E360Player --platform=linux --arch=x64 --version=0.36.9",
     "postinstall": "install-app-deps",
     "pack": "build",

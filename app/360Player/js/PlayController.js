@@ -69,6 +69,8 @@ var PlayController = function(){
             currentDuration = self.player.getVideoDuration();
             self.player.pause();
             moving = true;
+            e.stopPropagation(); 
+            return false;
         }
 
         var handleMouseMove = function(e){
@@ -99,6 +101,8 @@ var PlayController = function(){
                     y:e.clientY
                 }
             }
+            e.stopPropagation(); 
+            return false;
         }
 
         var handleMouseUp = function(e){
@@ -132,13 +136,22 @@ var PlayController = function(){
                 if(currentPlayStatus) self.player.pause();
                 else self.player.play();
             }
+            e.stopPropagation(); 
+            return false;
         }
 
         $timebarButton.mousedown(handleMouseDown);
         $timebarButton.mousemove(handleMouseMove);
         $timebarButton.mouseup(handleMouseUp);
-        $(window).mousemove(handleMouseMove);
-        $(window).mouseup(handleMouseUp);
+        window.addEventListener("mousemove",handleMouseMove);
+        window.addEventListener("mouseup",handleMouseUp);
+        
+        $videoContainer.hover(function(){
+            $controller.animate({height:50},500);
+        },function(){
+            $controller.animate({height:0},1000);
+            $volumeContainer.hide();
+        })
     }
     this.initPlayList = function(){
         $videoList.html("");
@@ -167,6 +180,12 @@ var PlayController = function(){
     this.initVolume = function(){
         $iconVolume.click(function(e){
             $volumeContainer.toggle();
+            e.stopPropagation();
+            return false;
+        })
+        $volumeContainer.click(function(e){
+            e.stopPropagation();
+            return false;
         })
         var volume = self.player.getVideoVolume();
         $volumebar.css({
@@ -186,6 +205,8 @@ var PlayController = function(){
             var volume = self.player.getVideoVolume();
             currentBottom = volume*200-9;
             moving = true;
+            e.stopPropagation(); 
+            return false;
         }
 
         var handleMouseMove = function(e){
@@ -212,6 +233,8 @@ var PlayController = function(){
                     y:e.clientY
                 }
             }
+            e.stopPropagation(); 
+            return false;
         }
 
         var handleMouseUp = function(e){
@@ -239,13 +262,20 @@ var PlayController = function(){
                 }
                 moving = false;
             }
+            e.stopPropagation(); 
+            return false;
         }
 
         $volumeButton.mousedown(handleMouseDown);
         $volumeButton.mousemove(handleMouseMove);
         $volumeButton.mouseup(handleMouseUp);
-        $(window).mousemove(handleMouseMove);
-        $(window).mouseup(handleMouseUp);
+        window.addEventListener("mousemove",handleMouseMove);
+        window.addEventListener("mouseup",handleMouseUp);
+        $container.click(function(e){
+            $volumeContainer.hide();
+            e.stopPropagation(); 
+            return false;
+        })
     }
     this.initLoopType = function(){
         $loopButton.click(function(e){

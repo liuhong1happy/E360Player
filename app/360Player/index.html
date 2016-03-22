@@ -8,26 +8,27 @@
 </head> 
 <body> 
     <div id="container" class="list-show">
-        <div id="video-container"></div>
-        <div id="videolist-container"></div>
-    </div>
-    <div id="controller">
-        <div id="play-control">
-            <span class="icon icon-previous" id="icon-previous"></span>
-            <span class="icon icon-pause" id="icon-play"></span>
-            <span class="icon icon-next" id="icon-next"></span>
-        </div>
-        <div id="play-progress">
-            <div id="progress">
-                <div id="timebar"></div>
-                <div id="timebar-button"></div>
+        <div id="video-container">
+            <div id="controller">
+                <div id="play-control">
+                    <span class="icon icon-previous" id="icon-previous"></span>
+                    <span class="icon icon-pause" id="icon-play"></span>
+                    <span class="icon icon-next" id="icon-next"></span>
+                </div>
+                <div id="play-progress">
+                    <div id="progress">
+                        <div id="timebar"></div>
+                        <div id="timebar-button"></div>
+                    </div>
+                </div>
+                <div id="play-looptype">
+                    <span class="icon-loop" id="loop-button"></span>
+                </div>
+                <div id="play-volume">
+                    <span class="icon-volume-medium" id="icon-volume"></span>
+                    
+                </div>
             </div>
-        </div>
-        <div id="play-looptype">
-            <span class="icon-loop" id="loop-button"></span>
-        </div>
-        <div id="play-volume">
-            <span class="icon-volume-medium" id="icon-volume"></span>
             <div id="volume-container">
                 <div id="volume-progress">
                     <div id="volumebar"></div>
@@ -35,7 +36,9 @@
                 </div>
             </div>
         </div>
+        <div id="videolist-container"></div>
     </div>
+
     <script src="js/menu.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/three.js"></script>
