@@ -1,7 +1,8 @@
 var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container"),$iconNext = $("#icon-next"),
     $iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container"),$volumeContainer = $("#volume-container"),$playProgress = $("#play-progress"),
     $volumeProgress = $("#volume-progress"),$volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),$timebarButton = $("#timebar-button"),
-    $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller");
+    $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),
+    $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller");
 
 var PlayController = function(){
     var self = {};
@@ -158,7 +159,7 @@ var PlayController = function(){
         
     }
     this.initPlayList = function(){
-        $videoList.html("");
+        $videoList.find(".video-list-item").remove();
         if(self.playlist.length>0){
             for(var i=0;i<self.playlist.length;i++){
                 var $videoListItem = $('<div class="video-list-item" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
@@ -178,8 +179,11 @@ var PlayController = function(){
                 })
             }
         }else{
-            $videoList.html("<span style='padding:10px;color:#999;'>暂且没有视频可以播放<span>");
+            $videoList.append("<span class='video-list-item' style='padding:10px;color:#999;'>暂且没有视频可以播放<span>");
         }
+        $videolistController.click(function(e){
+            self.togglePlayList();
+        })
     }
     this.initVolume = function(){
         $iconVolume.click(function(e){
@@ -383,6 +387,12 @@ var PlayController = function(){
         $videoContainer.toggleClass('toggle');
         $videoList.toggleClass('toggle');
         self.resizePlayer();
+        $videolistControllerButton.toggleClass(function(index,oldClass){
+            return oldClass.indexOf("icon-next2") !=-1?"icon-previous2":"icon-next2";
+        },true);
+        $videolistControllerButton.toggleClass(function(index,oldClass){
+            return oldClass.indexOf("icon-next2")>5?"icon-previous2":"icon-next2";
+        },false);
     }
     
     this.togglePlayControl = function(){
