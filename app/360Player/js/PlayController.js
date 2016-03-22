@@ -41,6 +41,9 @@ var PlayController = function(){
         $iconPlay.click(function(e){
             self.togglePlay();
         });
+        $videoContainer.dblclick(function(e){
+            self.togglePlay();
+        })
         $iconNext.click(function(e){
             self.playNextVideo();
         })
@@ -54,7 +57,6 @@ var PlayController = function(){
             if(hoverStatus) self.player.pause();
             else self.player.play();
         })
-        
         
         var moving = false,currentLeft = 0, downPositoin = {x:0,y:0},mousePosition = {x:0,y:0},currentWidthSum = 0,currentDuration = 0,currentPlayStatus=true;
         var handleMouseDown = function(e){
@@ -152,6 +154,8 @@ var PlayController = function(){
             $controller.animate({height:0},1000);
             $volumeContainer.hide();
         })
+        
+        
     }
     this.initPlayList = function(){
         $videoList.html("");
