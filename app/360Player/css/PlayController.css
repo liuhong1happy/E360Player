@@ -102,9 +102,9 @@ body{
     right: 15px;
     width:20px;
     height: 220px;
-    background-color: #eee;
-    border: 3px solid #666;
-    box-shadow: 1px 2px 3px #333,inset 0px 0px 3px #ddd;
+    background-color: rgba(238,238,238,0.4);
+    border: 3px solid rgba(102,102,102,0.4);
+    box-shadow: 1px 2px 3px rgba(51,51,51,0.4),inset 0px 0px 3px rgba(221,221,221,0.4);
     display: none;
 }
 #container #video-container #volume-container #volume-progress{
@@ -132,6 +132,7 @@ body{
     background-color: #ddd;
     border: 1px solid #999;
     border-radius: 16px;
+    cursor: pointer;
 }
 
 #controller #play-control .icon{

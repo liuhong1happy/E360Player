@@ -146,7 +146,7 @@ var PlayController = function(){
         window.addEventListener("mousemove",handleMouseMove);
         window.addEventListener("mouseup",handleMouseUp);
         
-        $videoContainer.hover(function(){
+        $container.hover(function(){
             $controller.animate({height:50},500);
         },function(){
             $controller.animate({height:0},1000);
@@ -261,21 +261,29 @@ var PlayController = function(){
                     y:e.clientY
                 }
                 moving = false;
+                $container.unbind("click",handleHideVolume);
+                setTimeout(function(){
+                    $container.bind("click",handleHideVolume);
+                },200)
             }
             e.stopPropagation(); 
             return false;
         }
 
+        var handleHideVolume = function(e){
+            $volumeContainer.hide();
+            console.log("hide click")
+            e.stopPropagation(); 
+            return false;
+        }    
+        
         $volumeButton.mousedown(handleMouseDown);
         $volumeButton.mousemove(handleMouseMove);
         $volumeButton.mouseup(handleMouseUp);
         window.addEventListener("mousemove",handleMouseMove);
         window.addEventListener("mouseup",handleMouseUp);
-        $container.click(function(e){
-            $volumeContainer.hide();
-            e.stopPropagation(); 
-            return false;
-        })
+
+        $container.bind("click",handleHideVolume);
     }
     this.initLoopType = function(){
         $loopButton.click(function(e){
