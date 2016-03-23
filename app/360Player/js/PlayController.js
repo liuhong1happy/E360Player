@@ -481,6 +481,16 @@ var PlayController = function(){
         }
     }
     
+    this.setFullScreen = function(flag){
+        if(flag){
+             $videoList.hide();
+             $videoContainer.css({"width":"100%"});
+        }else{
+            $videoList.show();
+            $videoContainer.css({"width":"auto"});
+        }
+    }
+    
     this.init = function(){
         self.initPlayer();
         self.initController();

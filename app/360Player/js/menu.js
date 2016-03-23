@@ -116,9 +116,13 @@ var createMenu = function(){
                 return 'F11';
             })(),
             click: function(item, focusedWindow) {
-              if (focusedWindow)
-                focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-            }
+                  console.log(item);
+                  if (focusedWindow)
+                        controller.setFullScreen(focusedWindow.isFullScreen());
+                        focusedWindow.setMenuBarVisibility(focusedWindow.isFullScreen());
+                        focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+                        
+                  }
           },
           {
             label: '切换开发工具',
@@ -221,7 +225,7 @@ var createMenu = function(){
             label: 'Quit',
             accelerator: 'Command+Q',
             click: function() { 
-                ipcRenderer.sendSync('sync-app-quit', null); 
+                ipcRenderer.send('async-app-quit', null); 
             }
           },
         ]
@@ -240,4 +244,7 @@ var createMenu = function(){
 
     var menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
+    
+
 }
+
