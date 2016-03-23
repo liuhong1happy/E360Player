@@ -2,9 +2,9 @@
 
 `E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).
 
-## Plan
+## Roadmap
 
-- [ ] player theme
+- [x] player theme
 - [ ] save play list with local strage
 - [ ] flat mode
 
@@ -12,18 +12,20 @@
 
 [百度云盘](http://pan.baidu.com/s/1RuHjg)
 
-## Develop
+## Quick start
 
-    git clone git@github.com:liuhong1happy/E360Player.git
-    cd E360Player
-    npm install && npm start
+1. clone & run
 
-## Release
+        git clone git@github.com:liuhong1happy/E360Player.git
+        cd E360Player
+        npm install && npm start
+    
+2. release
 
-    # osx 
-    npm run pack-osx
+        # osx 
+        npm run pack-osx
 
-## Log
+## Changelog
 
 #### v0.4.0
 
@@ -45,3 +47,9 @@
 - [x] open video file
 - [x] play & pause video
 - [x] play list
+
+License
+
+The MIT License (MIT)
+
+Copyright (c) 2016, Holly Liu
