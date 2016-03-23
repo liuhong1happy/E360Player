@@ -50,7 +50,9 @@ var PlayController = function(){
             duration:3600,// 视频总长度(s)
             width:3600, // 视频的宽度
             height:7200, // 视频的高度
-            paused:true
+            paused:true,
+            name:"test.mp4",
+            size:0
         },
         player:{
             loopType:"all-repeat", // 循环方式 ["循环播放","顺序播放","随机播放","单视频循环","单视频播放"]
@@ -498,6 +500,9 @@ var PlayController = function(){
             self.current.video.height = height;
             self.current.video.width = width;
             self.current.video.paused = false;
+            document.title = "360度全景视频播放器-"+self.current.video.name
+        }else{
+             document.title = "360度全景视频播放器"
         }
     }
     this.onended = function(){
