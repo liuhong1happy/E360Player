@@ -25,6 +25,22 @@ body{
 #container #video-container.toggle{
     right: 0px;
 }
+#container #video-container .tooltip{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200px;
+    padding: 10px 5px;
+    height: auto;
+    margin-left: -100px;
+    margin-top: -30px;
+    text-align: center;
+    word-wrap: break-word;
+    border:3px solid rgba(51,51,51,0.4);
+    background-color: rgba(238,238,238,0.4);
+    color: #666;
+    font-size: 12px;
+}
 #container #videolist-container{
     position: absolute;
     top: 0px;
@@ -36,6 +52,7 @@ body{
     height: 100%;
     transition: width 1s, transform 1s;
 }
+
 #container #videolist-container #videolist-controller{
     position: absolute;
     left: -30px;

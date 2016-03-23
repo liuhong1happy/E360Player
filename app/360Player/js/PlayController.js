@@ -4,6 +4,32 @@ var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#v
     $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),
     $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller");
 
+var ToolTip = function(options){
+    var self = {};
+    var default_options = {
+        content:"状态变化",
+        name:"提示"
+    }
+    this.options = $.extend({},default_options,options);
+    this.$parent = $videoContainer;
+    this.$content = {};
+    this.show = function(options){
+        self.options = $.extend({},self.options,options);
+        self.$content = $("<div class='tooltip'>"+self.options.content+"</div>").appendTo(self.$parent);
+        self.$content.css({
+            opacity:1
+        })
+    }
+    this.hide = function(){
+        self.$content.animate({opacity:0},3000,"",function(){
+            self.$content.remove();
+        })
+    }
+    self = this;
+    return this;
+}
+
+
 var PlayController = function(){
     var self = {};
     this.playlist = ["test.mp4"];
@@ -41,15 +67,37 @@ var PlayController = function(){
     this.initController = function(){
         $iconPlay.click(function(e){
             self.togglePlay();
+            var paused = self.player.getVideoPaused();
+            var tooltip = new ToolTip();
+            tooltip.show({
+                content:"播放控制<span style='color:darkcyan;'>"+(paused?"暂停":"播放")+"</span>"
+            })
+            tooltip.hide();
         });
         $videoContainer.dblclick(function(e){
             self.togglePlay();
+            var paused = self.player.getVideoPaused();
+            var tooltip = new ToolTip();
+            tooltip.show({
+                content:"播放控制<span style='color:darkcyan;'>"+(paused?"暂停":"播放")+"</span>"
+            })
+            tooltip.hide();
         })
         $iconNext.click(function(e){
             self.playNextVideo();
+            var tooltip = new ToolTip();
+            tooltip.show({
+                content:"播放控制<span style='color:darkcyan;'>下一视频</span>"
+            })
+            tooltip.hide();
         })
         $iconPrevious.click(function(e){
             self.playPrevVideo();
+            var tooltip = new ToolTip();
+            tooltip.show({
+                content:"播放控制<span style='color:darkcyan;'>上一视频</span>"
+            })
+            tooltip.hide();
         })
         var hoverStatus = $iconPlay.hasClass("icon-play2");
         $timebarButton.hover(function(e){
@@ -304,6 +352,14 @@ var PlayController = function(){
             player.loopName = loopType.name;
             player.loopType = loopType.id;
             $loopButton.addClass(player.loopIcon);
+            $loopButton.attr("title",player.loopName);
+            var tooltip = new ToolTip();
+            tooltip.show({
+                content:"循环播放方式切换为<span style='color:darkcyan;'>"+player.loopName+"</span>"
+            })
+            tooltip.hide();
+            e.stopPropagation();
+            return false;
         })
     }
     this.togglePlay = function(){

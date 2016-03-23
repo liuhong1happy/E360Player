@@ -48,7 +48,7 @@
 - [x] play & pause video
 - [x] play list
 
-License
+## License
 
 The MIT License (MIT)
 
