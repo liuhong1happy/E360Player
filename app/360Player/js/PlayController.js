@@ -39,8 +39,7 @@ var PlayController = function(){
         duration:3600,
         width:3600,
         height:7200,
-        paused:true}
-    ];
+        paused:true}];
     this.loopTypes = [{id:"all-repeat",name:"循环播放",className:"icon-loop"},{id:"order",name:"顺序播放",className:"icon-list"},{id:"shuffle",name:"随机播放",className:"icon-shuffle"},{id:"repeat-once",name:"单视频循环",className:"icon-loop2"},{id:"once",name:"单视频播放",className:"icon-switch"}]
     this.current = {
         index:0,
@@ -58,7 +57,8 @@ var PlayController = function(){
             loopType:"all-repeat", // 循环方式 ["循环播放","顺序播放","随机播放","单视频循环","单视频播放"]
             loopIndex:0,
             loopName:"循环播放",
-            loopIcon:"icon-loop"
+            loopIcon:"icon-loop",
+            listWidth:300
         }
     };
     this.player = null;
@@ -207,11 +207,19 @@ var PlayController = function(){
         window.addEventListener("mousemove",handleMouseMove);
         window.addEventListener("mouseup",handleMouseUp);
         
-        $container.hover(function(){
-            $controller.animate({height:50},500);
+        $container.mousemove(function(e){
+            if(e.clientY+200>window.innerHeight){
+                $controller.css({height:50});
+            }else{
+                $controller.css({height:0});
+            }
+        })
+        $container.hover(function(e){
+            $videolistController.show();
         },function(){
-            $controller.animate({height:0},1000);
+            $controller.css({height:0});
             $volumeContainer.hide();
+            $videolistController.hide();
         })
         
         
@@ -223,8 +231,8 @@ var PlayController = function(){
                 var active = self.playlist[i].src == self.current.video.src;
                 
                 var $videoListItem = $('<div class="video-list-item'+(active?" active":"")+'" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
-                var $itemName = $('<span class="item-name" data-index="'+i+'">'+self.playlist[i].name+'</span>').appendTo($videoListItem);
-                var $itemClose = $('<span class="item-close" id="item-close-'+i+'" data-index="'+i+'">&times;</span>').appendTo($videoListItem);
+                var $itemName = $('<span class="item-name" data-index="'+i+'" title="'+self.playlist[i].name+'" >'+self.playlist[i].name+'</span>').appendTo($videoListItem);
+                var $itemClose = $('<span class="item-close" title="删除" id="item-close-'+i+'" data-index="'+i+'">&times;</span>').appendTo($videoListItem);
                 $itemClose.click(function(e){
                     e = e || event;
                     var target = e.target || e.srcElement;
@@ -239,11 +247,10 @@ var PlayController = function(){
                 })
             }
         }else{
-            $videoList.append("<span class='video-list-item' style='padding:10px;color:#999;'>暂且没有视频可以播放<span>");
+            $videoList.append("<span style='padding:10px;color:#999;display:block;text-align:center;'>播放列表没有视频<span>");
         }
-        $videolistController.click(function(e){
-            self.togglePlayList();
-        })
+        $videolistController.unbind("click",self.togglePlayList);
+        $videolistController.bind("click",self.togglePlayList);
     }
     this.initVolume = function(){
         $iconVolume.click(function(e){
