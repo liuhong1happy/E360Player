@@ -209,8 +209,12 @@ body{
     box-shadow: 0px 1px 2px #333;
     cursor: default;
 }
-#container #videolist-container .video-list-item:hover{
+#container #videolist-container .video-list-item:hover,#container #videolist-container .video-list-item.active:hover{
     background-color: rgba(215,235,255,0.3);
+    color: #333;
+}
+#container #videolist-container .video-list-item.active{
+    background-color: rgba(238,238,238,0.1);
     color: #333;
 }
 #container #videolist-container .video-list-item .item-close{

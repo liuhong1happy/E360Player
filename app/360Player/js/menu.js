@@ -13,9 +13,10 @@ var createMenu = function(){
                     label:"打开视频",
                     accelerator: 'CmdOrCtrl+O',
                     click: function(item, focusedWindow) {
-                       var files = ipcRenderer.sendSync('sync-open-file', null); 
+                        var files = ipcRenderer.sendSync('sync-open-file', null); 
                         if(files[0]){
-                            controller.addVideoToList(files[0]);
+                            const file_info = ipcRenderer.sendSync("sync-file-info",files[0])
+                            controller.addVideoToList(file_info);
                         }else{
                             console.log("not file")
                         }

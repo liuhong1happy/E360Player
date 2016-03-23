@@ -236,6 +236,12 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             getVideoFov:function(fov){
                 return camera.fov;
+            },
+            getVideoWidth:function(){
+                return video.videoWidth;
+            },
+            getVideoHeight:function(){
+                return video.videoHeight;
             }
         }
     };

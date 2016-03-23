@@ -29,10 +29,18 @@ var ToolTip = function(options){
     return this;
 }
 
-
 var PlayController = function(){
     var self = {};
-    this.playlist = ["test.mp4"];
+    this.playlist = [{
+        name:"test.mp4",
+        size:0,
+        currentTime:0,
+        src:"test.mp4",
+        duration:3600,
+        width:3600,
+        height:7200,
+        paused:true}
+    ];
     this.loopTypes = [{id:"all-repeat",name:"循环播放",className:"icon-loop"},{id:"order",name:"顺序播放",className:"icon-list"},{id:"shuffle",name:"随机播放",className:"icon-shuffle"},{id:"repeat-once",name:"单视频循环",className:"icon-loop2"},{id:"once",name:"单视频播放",className:"icon-switch"}]
     this.current = {
         index:0,
@@ -210,8 +218,10 @@ var PlayController = function(){
         $videoList.find(".video-list-item").remove();
         if(self.playlist.length>0){
             for(var i=0;i<self.playlist.length;i++){
-                var $videoListItem = $('<div class="video-list-item" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
-                var $itemName = $('<span class="item-name" data-index="'+i+'">'+self.playlist[i]+'</span>').appendTo($videoListItem);
+                var active = self.playlist[i].src == self.current.video.src;
+                
+                var $videoListItem = $('<div class="video-list-item'+(active?" active":"")+'" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
+                var $itemName = $('<span class="item-name" data-index="'+i+'">'+self.playlist[i].name+'</span>').appendTo($videoListItem);
                 var $itemClose = $('<span class="item-close" id="item-close-'+i+'" data-index="'+i+'">&times;</span>').appendTo($videoListItem);
                 $itemClose.click(function(e){
                     e = e || event;
@@ -376,36 +386,38 @@ var PlayController = function(){
         if(self.playlist.length>0){
             var index = self.current.index;
             index = (index+self.playlist.length-1)%self.playlist.length;
-            var filePath = self.playlist[index];
+            var filePath = self.playlist[index].src;
             // 修改播放器视频路径并开始播放
             self.player.pause();
             self.player.setVideoSrc(filePath);
             self.togglePlay();
             self.player.play();
             self.current.index = index;
+            self.current.video = self.playlist[index];
         }
     }
     this.playNextVideo = function(){
         if(self.playlist.length>0){
             var index = self.current.index;
             index = (index+1)%self.playlist.length;
-            var filePath = self.playlist[index];
+            var filePath = self.playlist[index].src;
             // 修改播放器视频路径并开始播放
             self.player.pause();
             self.player.setVideoSrc(filePath);
             self.togglePlay();
             self.player.play();
             self.current.index = index;
+            self.current.video = self.playlist[index];
         }
     }
-    this.addVideoToList = function(filePath){
-        self.playlist.push(filePath);
+    this.addVideoToList = function(file_info){
+        self.playlist.push(file_info);
         // 修改播放器视频路径并开始播放
         self.player.pause();
-        self.player.setVideoSrc(filePath);
+        self.player.setVideoSrc(file_info.src);
         self.player.play();
         self.current.index = self.playlist.length-1;
-
+        self.current.video = self.playlist[self.current.index];
         // 更新播放列表
         self.initPlayList();
     }
@@ -413,14 +425,7 @@ var PlayController = function(){
         var i = parseInt(index);
         self.playlist.splice(i,1);
         if(self.current.index == i){
-            self.player.pause();   
-            self.current.index = self.current.index%self.playlist.length;
-
-            var filePath = self.playlist[self.current.index];
-            // 修改播放器视频路径并开始播放
-            self.player.pause();
-            self.player.setVideoSrc(filePath);
-            self.player.play();
+            self.current.index = (self.current.index-1)%self.playlist.length;
         }
         if(self.current.index>i){
              self.current.index = self.current.index-1;
@@ -477,6 +482,8 @@ var PlayController = function(){
     this.onplaying = function(){
         var duration = self.player.getVideoDuration();
         var currentTime = self.player.getVideoCurrentTime();
+        var width = self.player.getVideoWidth();
+        var height = self.player.getVideoHeight();
         if(duration && !isNaN(duration) && currentTime && !isNaN(currentTime) ){
             $timebar.css({
                 width: (currentTime*100/duration)+ "%"
@@ -485,8 +492,16 @@ var PlayController = function(){
                 left: (currentTime*100/duration)+ "%"
             })
         }
+        if(self.current.video){
+            self.current.video.duration = duration;
+            self.current.video.currentTime = currentTime;
+            self.current.video.height = height;
+            self.current.video.width = width;
+            self.current.video.paused = false;
+        }
     }
     this.onended = function(){
+        if(self.playlist.length==0) return;
         if(self.current.player.loopType == "repeat-once") return;
         if(self.current.player.loopType == "once"){
             self.player.pause();
@@ -499,7 +514,7 @@ var PlayController = function(){
                 return;
             }
             var index = (self.current.index+1) % self.playlist.length;
-            var src = self.playlist[index];
+            var src = self.playlist[index].src;
             self.player.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
@@ -508,7 +523,7 @@ var PlayController = function(){
         }
         if(self.current.player.loopType == "all-repeat"){
             var index = (self.current.index+1) % self.playlist.length;
-            var src = self.playlist[index];
+            var src = self.playlist[index].src;
             self.player.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
@@ -519,13 +534,16 @@ var PlayController = function(){
         if(self.current.player.loopType == "shuffle"){
             var index = new Date().valueOf();
             index = (index+1) % self.playlist.length;
-            var src = self.playlist[index];
+            var src = self.playlist[index].src;
             self.player.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
             self.player.play();
             self.current.index = index;
         }
+        self.current.video = self.playlist[self.current.index];
+        self.current.video.currentTime = 0;
+        self.initPlayList();
     }
     self = this;
     return this;

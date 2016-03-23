@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require("fs");
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
@@ -69,7 +70,7 @@ ipcMain.on('asynchronous-message', function(event, arg) {
 });
 
 ipcMain.on('sync-open-file', function(event, arg) {
-  var results = dialog.showOpenDialog({ properties: [ 'openFile'],filters: [{ name: 'Movies', extensions: ['mp4'] }]});
+  const results = dialog.showOpenDialog({ properties: [ 'openFile'],filters: [{ name: 'Movies', extensions: ['mp4'] }]});
   event.returnValue = results?results:[];
 });
 
@@ -77,3 +78,13 @@ ipcMain.on('sync-app-quit', function(event, arg) {
    app.quit();
   event.returnValue = true;
 });
+
+ipcMain.on("sync-file-info",function(event,arg){
+    const states = fs.statSync(arg);
+    const basename = path.basename(arg);
+    event.returnValue = {
+        name:basename,
+        size:states.size,
+        src:arg
+    }
+})
