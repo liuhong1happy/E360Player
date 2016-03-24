@@ -2,7 +2,7 @@ var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#v
     $iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container"),$volumeContainer = $("#volume-container"),$playProgress = $("#play-progress"),
     $volumeProgress = $("#volume-progress"),$volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),$timebarButton = $("#timebar-button"),
     $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),
-    $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller");
+    $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller"),$videolistControllerSplitter = $("#videolist-controller-splitter");
 
 var PlayerStorage = {
     getPlayList:function(){
@@ -234,7 +234,7 @@ var PlayController = function(){
         
         
     }
-    this.initPlayList = function(){
+    this.updatePlayerList = function(){
         $videoList.find(".video-list-item").remove();
         $videoList.find(".video-list-none").remove();
         if(self.playlist.length>0){
@@ -264,6 +264,114 @@ var PlayController = function(){
         $videolistController.unbind("click",self.togglePlayList);
         $videolistController.bind("click",self.togglePlayList);
         self.saveStorage();
+    }
+    this.initPlayList = function(){
+        self.updatePlayerList();
+        
+        var show = !!self.current.player.listshow;
+        var currentRight =0;
+        if(show){
+            currentRight = self.current.player.listWidth;   
+            $videoContainer.removeClass("toggle");
+            $videoList.removeClass("toggle");
+            $videolistControllerButton.removeClass("icon-previous2");
+            $videolistControllerButton.addClass("icon-next2");
+        }else{
+            $videoContainer.addClass("toggle");
+            $videoList.addClass("toggle");
+            $videolistControllerButton.addClass("icon-previous2");
+            $videolistControllerButton.removeClass("icon-next2");
+        }
+        self.current.player.listshow = show;
+        $videoContainer.css({
+            right:currentRight
+        })
+        $videoList.css({
+            width:currentRight
+        })
+        self.resizePlayer();
+        self.saveStorage();
+        
+        var moving = false,currentRight = 0, downPositoin = {x:0,y:0},mousePosition = {x:0,y:0};
+        var handleMouseDown = function(e){
+            if(moving) moving = false;
+            downPositoin = {
+                x:e.clientX,
+                y:e.clientY
+            }
+            currentRight = self.current.player.listWidth;
+            moving = true;
+            e.stopPropagation(); 
+            return false;
+        }
+
+        var handleMouseMove = function(e){
+            if(moving){
+                mousePosition = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+
+                var dx = mousePosition.x - downPositoin.x;
+                currentRight = currentRight - dx;
+                if(currentRight>400) { currentRight = 400;}
+                if(currentRight<100){ currentRight= 100; }
+
+                $videoList.css({
+                    width:currentRight
+                });
+                $videoContainer.css({
+                    right:currentRight
+                })
+                downPositoin = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+                self.current.player.listWidth = currentRight;
+                self.resizePlayer();
+                self.saveStorage();
+            }
+            e.stopPropagation(); 
+            return false;
+        }
+
+        var handleMouseUp = function(e){
+            if(moving){
+                mousePosition = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+
+                var dx = mousePosition.x - downPositoin.x;
+                currentRight = currentRight - dx;
+                if(currentRight>400) { currentRight = 400;}
+                if(currentRight<100){ currentRight= 100; }
+
+                $videoList.css({
+                    width:currentRight
+                });
+                $videoContainer.css({
+                    right:currentRight
+                })
+                downPositoin = {
+                    x:e.clientX,
+                    y:e.clientY
+                }
+                self.current.player.listWidth = currentRight;
+                self.resizePlayer();
+                self.saveStorage();
+                moving = false;
+            }
+            e.stopPropagation(); 
+            return false;
+        }        
+        
+        $videolistControllerSplitter.mousedown(handleMouseDown);
+        $videolistControllerSplitter.mousemove(handleMouseMove);
+        $videolistControllerSplitter.mouseup(handleMouseUp);
+        window.addEventListener("mousemove",handleMouseMove);
+        window.addEventListener("mouseup",handleMouseUp);
+        
     }
     this.initVolume = function(){
         $iconVolume.click(function(e){
@@ -441,7 +549,7 @@ var PlayController = function(){
         self.current.index = self.playlist.length-1;
         self.current.video = self.playlist[self.current.index];
         // 更新播放列表
-        self.initPlayList();
+        self.updatePlayList();
     }
     this.removeVideoFromList = function(index){
         var i = parseInt(index);
@@ -453,7 +561,7 @@ var PlayController = function(){
              self.current.index = self.current.index-1;
         }
         // 更新播放列表
-        self.initPlayList();
+        self.updatePlayList();
     }
 
     this.playVideoByIndex = function(index){
@@ -466,13 +574,26 @@ var PlayController = function(){
         self.current.index = index;
         self.current.video = self.playlist[self.current.index];
         // 更新播放列表
-        self.initPlayList();
+        self.updatePlayList();
     }
 
     this.togglePlayList = function(){
+        var show = $videoContainer.hasClass("toggle");
+        var currentRight =0;
+        if(show){
+            currentRight = self.current.player.listWidth;   
+        }
+        self.current.player.listshow = show;
+        $videoContainer.css({
+            right:currentRight
+        })
+        $videoList.css({
+            width:currentRight
+        })
         $videoContainer.toggleClass('toggle');
         $videoList.toggleClass('toggle');
         self.resizePlayer();
+        self.saveStorage();
         $videolistControllerButton.toggleClass(function(index,oldClass){
             return oldClass.indexOf("icon-next2") !=-1?"icon-previous2":"icon-next2";
         },true);
@@ -582,7 +703,7 @@ var PlayController = function(){
         }
         self.current.video = self.playlist[self.current.index];
         self.current.video.currentTime = 0;
-        self.initPlayList();
+        self.updatePlayList();
     }
     
     this.saveStorage = function(){

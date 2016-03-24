@@ -23,6 +23,7 @@ body{
 }
 #container #video-container.toggle{
     right: 0px;
+    
 }
 #container #video-container .tooltip{
     position: absolute;
@@ -71,8 +72,10 @@ body{
     background-color: rgba(102,102,102,0.4);
     color: rgba(255,255,255,0.4);
 }
+
 #container #videolist-container.toggle{
     width:0px;
+    border-left:0px solid transparent;
 }
 
 
@@ -236,4 +239,13 @@ body{
 }
 #container #videolist-container .video-list-item .item-close:hover{
      color: #fff;
+}
+#container #videolist-container #videolist-controller-splitter {
+    position: absolute;
+    left: -5px;
+    width: 10px;
+    top: 0px;
+    height: 100%;
+    background-color: transparent;
+    cursor: ew-resize;
 }
