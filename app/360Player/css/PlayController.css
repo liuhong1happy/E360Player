@@ -249,3 +249,28 @@ body{
     background-color: transparent;
     cursor: ew-resize;
 }
+#container #video-container #flat-screen-container {
+    position: absolute;
+    top: 0px;
+    height: 90px;
+    width: 360px;
+    right: 0px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background-color: black;
+    box-sizing: content-box;
+}
+
+#container #video-container #flat-screen-rect{
+    position: absolute;
+    right: 50%;
+    width: 110px;
+    height: 90px;
+    top: 0px;
+    border: 2px solid red;
+    background-color: transparent;
+    box-sizing: border-box;
+}
+#container #video-container #flat-screen{
+    width: 100%;
+    height: 100%;
+}

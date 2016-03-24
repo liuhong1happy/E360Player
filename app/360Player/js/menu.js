@@ -143,18 +143,28 @@ var createMenu = function(){
           },
           {
             label: '切换播放列表',
-            accelerator: 'CmdOrCtrl+H',
+            accelerator: (function() {
+              if (process.platform == 'darwin')
+                return 'Alt+Command+H';
+              else
+                return 'Ctrl+Shift+H';
+            })(),
             click: function(item, focusedWindow) {
                 controller.togglePlayList();
             }
           },          
-//          {
-//            label: '切换播放控制',
-//            accelerator: 'CmdOrCtrl+J',
-//            click: function(item, focusedWindow) {
-//                controller.togglePlayControl();
-//            }
-//          },
+          {
+            label: '切换播放控制',
+            accelerator: (function() {
+              if (process.platform == 'darwin')
+                return 'Alt+Command+J';
+              else
+                return 'Ctrl+Shift+J';
+            })(),
+            click: function(item, focusedWindow) {
+                controller.toggleFlatScreen();
+            }
+          },
         ]
       },
       {

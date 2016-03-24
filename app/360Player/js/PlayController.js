@@ -4,6 +4,11 @@ var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#v
     $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),
     $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller"),$videolistControllerSplitter = $("#videolist-controller-splitter");
 
+var $flatScreenContainer = $("#flat-screen-container"), $flatScreenRect = $("#flat-screen-rect");
+var flatScreen = document.getElementById("flat-screen");
+var flatScreenContext = flatScreen.getContext( '2d');
+
+
 var PlayerStorage = {
     getPlayList:function(){
         var json = window.localStorage.getItem("playlist");
@@ -28,7 +33,9 @@ var PlayerStorage = {
             loopIndex:0,
             loopName:"循环播放",
             loopIcon:"icon-loop",
-            listWidth:300
+            listWidth:300,
+            listShow:true,
+            flatShow:true
         }:JSON.parse(json);
         return currentplayer;
     }
@@ -500,6 +507,9 @@ var PlayController = function(){
             return false;
         })
     }
+    this.initFlatScreen = function(){
+        self.current.player.flatShow ? $flatScreenContainer.show() : $flatScreenContainer.hide();
+    }
     this.togglePlay = function(){
         var paused = self.player.getVideoPaused();
         if(paused){
@@ -615,6 +625,14 @@ var PlayController = function(){
         self.resizePlayer();
     }
     
+    this.toggleFlatScreen = function(){
+        $flatScreenContainer.toggle();
+        var display = $flatScreenContainer.css("display");
+        var show = display!="none";
+        self.current.player.flatShow = show;
+        self.saveStorage();
+    }
+    
     this.resizePlayer = function(){
         for(var i=0;i<60;i++){
             setTimeout(function(){
@@ -634,7 +652,6 @@ var PlayController = function(){
             $videoContainer.css({"width":"auto"});
         }
     }
-
     
     this.init = function(){
         self.initPlayer();
@@ -642,13 +659,34 @@ var PlayController = function(){
         self.initPlayList();
         self.initVolume();
         self.initLoopType();
+        self.initFlatScreen();
     }
     
-    this.onplaying = function(){
+    this.onplaying = function(video){
         var duration = self.player.getVideoDuration();
         var currentTime = self.player.getVideoCurrentTime();
         var width = self.player.getVideoWidth();
         var height = self.player.getVideoHeight();
+        var fov = self.player.getVideoFov();
+        var phi = self.player.getPlayerPhiDelta();
+        
+        var rect_width = fov*2;
+        var rect_right = phi%360;
+        var rect_left = (360-rect_right)-fov*2;
+        var rect_height = 360/width*height;
+        if(rect_left<0) rect_width = rect_left+rect_width;
+        if(rect_right<0) rect_width = rect_width+rect_right;
+        $flatScreenRect.css({
+            width:rect_width,
+            right:rect_right<0?0:rect_right,
+            left:rect_left<0?0:rect_left,
+            height:rect_height/2
+        })
+        $flatScreenContainer.css({
+            height:rect_height/2
+        })
+        flatScreenContext.drawImage(video, 0, 0,width,height, 0,-rect_height/2,360,rect_height*2);
+        
         if(duration && !isNaN(duration) && currentTime && !isNaN(currentTime) ){
             $timebar.css({
                 width: (currentTime*100/duration)+ "%"

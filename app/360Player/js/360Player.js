@@ -167,6 +167,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
 
                         // 修复禁止用户观看顶部和底部
                         if(phiDelta>360) phiDelta = phiDelta%360; 
+                        if(phiDelta<0) phiDelta= (phiDelta+360)%360; 
                         if(thetaDelta>175){ thetaDelta=175;}
                         if(thetaDelta<5){ thetaDelta = 5;}
                     }
@@ -244,6 +245,9 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             getVideoHeight:function(){
                 return video.videoHeight;
+            },
+            getPlayerPhiDelta:function(){
+                return phiDelta;
             }
         }
     };
