@@ -539,13 +539,22 @@ var PlayController = function(){
         }
     }
     this.addVideoToList = function(file_info){
-        self.playlist.push(file_info);
+        var exists = self.playlist.filter(function(ele,pos){
+            ele.index = pos;
+            return ele.src == file_info.src;
+        });
+        if(exists.length>0){
+            self.current.index = exists[0].index;
+            self.current.video = self.playlist[self.current.index];
+        }else{
+            self.playlist.push(file_info);
+            self.current.index = self.playlist.length-1;
+            self.current.video = self.playlist[self.current.index];
+        }
         // 修改播放器视频路径并开始播放
         self.player.pause();
         self.player.setVideoSrc(file_info.src);
         self.player.play();
-        self.current.index = self.playlist.length-1;
-        self.current.video = self.playlist[self.current.index];
         // 更新播放列表
         self.updatePlayList();
     }
