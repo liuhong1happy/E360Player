@@ -71,7 +71,9 @@ app.on('activate', function () {
 
 ipcMain.on('sync-open-file', function(event, arg) {
   const results = dialog.showOpenDialog({ properties: [ 'openFile'],filters: [{ name: 'Movies', extensions: ['mp4'] }]});
-  event.returnValue = results?results:[];
+  var _results = results?results:[];
+  if(_results.length>0) app.addRecentDocument(_results[0]);
+  event.returnValue = _results?_results:[];
 });
 
 ipcMain.on('async-app-quit', function(event, arg) {

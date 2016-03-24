@@ -34,10 +34,12 @@ var E360Palyer = function(parentDomElement,videoSrc){
         var video,scene,camera,renderer,videoImageContext,videoTexture,videoImage,pauseVideo = true,events={};
         var createVideo = function(){
             video = document.createElement( 'video' );
-            video.src = videoSrc;
-            video.loop = false;
-            video.preload = "meta";
-            video.load(); 
+            if(videoSrc){
+                video.src = videoSrc;
+                video.loop = false;
+                video.preload = "meta";
+                video.load(); 
+            }
         };
         var createScene = function(){
             scene = new THREE.Scene(); 

@@ -4,6 +4,36 @@ var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#v
     $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),
     $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller");
 
+var PlayerStorage = {
+    getPlayList:function(){
+        var json = window.localStorage.getItem("playlist");
+        var playlist = json==null ?[]:JSON.parse(json);
+        for(var i=0;i<playlist.length;i++){
+            var file_info = ipcRenderer.sendSync("sync-file-info",playlist[i].src);
+            playlist[i].name = file_info.name;
+            playlist[i].size = file_info.size;
+        }
+        return playlist;
+    },
+    setPlayList:function(playlist){
+        window.localStorage.setItem("playlist",JSON.stringify(playlist));
+    },
+    setCurrentPlayer:function(currentplayer){
+        window.localStorage.setItem("currentplayer",JSON.stringify(currentplayer));
+    },
+    getCurrentPlayer:function(){
+        var json = window.localStorage.getItem("currentplayer");
+        var currentplayer = json==null ?{
+            loopType:"all-repeat", // 循环方式 ["循环播放","顺序播放","随机播放","单视频循环","单视频播放"]
+            loopIndex:0,
+            loopName:"循环播放",
+            loopIcon:"icon-loop",
+            listWidth:300
+        }:JSON.parse(json);
+        return currentplayer;
+    }
+}
+
 var ToolTip = function(options){
     var self = {};
     var default_options = {
@@ -31,39 +61,19 @@ var ToolTip = function(options){
 
 var PlayController = function(){
     var self = {};
-    this.playlist = [{
-        name:"test.mp4",
-        size:0,
-        currentTime:0,
-        src:"test.mp4",
-        duration:3600,
-        width:3600,
-        height:7200,
-        paused:true}];
+    this.playlist = PlayerStorage.getPlayList();
     this.loopTypes = [{id:"all-repeat",name:"循环播放",className:"icon-loop"},{id:"order",name:"顺序播放",className:"icon-list"},{id:"shuffle",name:"随机播放",className:"icon-shuffle"},{id:"repeat-once",name:"单视频循环",className:"icon-loop2"},{id:"once",name:"单视频播放",className:"icon-switch"}]
     this.current = {
         index:0,
         video:{
-            currentTime:0,// 视频播放到什么位置(s)
-            src:"test.mp4",// 视频播放源 // 视频的高宽
-            duration:3600,// 视频总长度(s)
-            width:3600, // 视频的宽度
-            height:7200, // 视频的高度
-            paused:true,
-            name:"test.mp4",
-            size:0
+            name:null
         },
-        player:{
-            loopType:"all-repeat", // 循环方式 ["循环播放","顺序播放","随机播放","单视频循环","单视频播放"]
-            loopIndex:0,
-            loopName:"循环播放",
-            loopIcon:"icon-loop",
-            listWidth:300
-        }
+        player:PlayerStorage.getCurrentPlayer()
     };
     this.player = null;
     this.initPlayer = function(){
-        var player  = new E360Palyer(document.getElementById("video-container"),"test.mp4");
+        
+        var player  = new E360Palyer(document.getElementById("video-container"),null);
         player.init();
         player.resize($videoContainer.width(),$videoContainer.height());
         player.play();
@@ -226,8 +236,10 @@ var PlayController = function(){
     }
     this.initPlayList = function(){
         $videoList.find(".video-list-item").remove();
+        $videoList.find(".video-list-none").remove();
         if(self.playlist.length>0){
             for(var i=0;i<self.playlist.length;i++){
+                
                 var active = self.playlist[i].src == self.current.video.src;
                 
                 var $videoListItem = $('<div class="video-list-item'+(active?" active":"")+'" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
@@ -247,10 +259,11 @@ var PlayController = function(){
                 })
             }
         }else{
-            $videoList.append("<span style='padding:10px;color:#999;display:block;text-align:center;'>播放列表没有视频<span>");
+            $videoList.append("<span class='video-list-none' style='padding:10px;color:#999;display:block;text-align:center;'>播放列表没有视频<span>");
         }
         $videolistController.unbind("click",self.togglePlayList);
         $videolistController.bind("click",self.togglePlayList);
+        self.saveStorage();
     }
     this.initVolume = function(){
         $iconVolume.click(function(e){
@@ -445,12 +458,15 @@ var PlayController = function(){
 
     this.playVideoByIndex = function(index){
         var index = parseInt(index);
-        var filePath = self.playlist[index];
+        var filePath = self.playlist[index].src;
         // 修改播放器视频路径并开始播放
         self.player.pause();
         self.player.setVideoSrc(filePath);
         self.player.play();
         self.current.index = index;
+        self.current.video = self.playlist[self.current.index];
+        // 更新播放列表
+        self.initPlayList();
     }
 
     this.togglePlayList = function(){
@@ -498,6 +514,7 @@ var PlayController = function(){
         self.initVolume();
         self.initLoopType();
     }
+    
     this.onplaying = function(){
         var duration = self.player.getVideoDuration();
         var currentTime = self.player.getVideoCurrentTime();
@@ -511,7 +528,7 @@ var PlayController = function(){
                 left: (currentTime*100/duration)+ "%"
             })
         }
-        if(self.current.video){
+        if(self.current.video && self.current.video.name){
             self.current.video.duration = duration;
             self.current.video.currentTime = currentTime;
             self.current.video.height = height;
@@ -566,6 +583,11 @@ var PlayController = function(){
         self.current.video = self.playlist[self.current.index];
         self.current.video.currentTime = 0;
         self.initPlayList();
+    }
+    
+    this.saveStorage = function(){
+        PlayerStorage.setPlayList(self.playlist);
+        PlayerStorage.setCurrentPlayer(self.current.player);
     }
     self = this;
     return this;
