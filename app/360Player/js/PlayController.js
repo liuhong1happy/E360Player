@@ -627,10 +627,10 @@ var PlayController = function(){
     
     this.setFullScreen = function(flag){
         if(flag){
-             $videoList.hide();
+             $videoList.show();
              $videoContainer.css({"width":"100%"});
         }else{
-            $videoList.show();
+            $videoList.hide();
             $videoContainer.css({"width":"auto"});
         }
     }

@@ -121,7 +121,6 @@ var createMenu = function(){
                         controller.setFullScreen(focusedWindow.isFullScreen());
                         focusedWindow.setMenuBarVisibility(focusedWindow.isFullScreen());
                         focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-                        
                   }
           },
           {
