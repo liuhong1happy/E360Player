@@ -4,8 +4,6 @@
 
 ## Roadmap
 
-- [x] player theme
-- [ ] save play list with local strage
 - [ ] flat mode
 
 ## Download
@@ -26,6 +24,11 @@
         npm run pack-osx
 
 ## Changelog
+
+#### v0.4.1
+
+- [x] player theme
+- [x] save play list with local strage
 
 #### v0.4.0
 
