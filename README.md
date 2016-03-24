@@ -29,7 +29,7 @@
 
 - [x] player theme
 - [x] save play list with local strage
-- [x] some bugs [3](issues/3)
+- [x] fix issue [#3](https://github.com/liuhong1happy/E360Player/issues/3)
 
 #### v0.4.0
 
