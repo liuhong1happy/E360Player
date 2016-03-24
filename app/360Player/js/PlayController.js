@@ -232,7 +232,7 @@ var PlayController = function(){
             $videolistController.hide();
         })
     }
-    this.updatePlayerList = function(){
+    this.updatePlayList = function(){
         $videoList.find(".video-list-item").remove();
         $videoList.find(".video-list-none").remove();
         if(self.playlist.length>0){
@@ -264,7 +264,7 @@ var PlayController = function(){
         self.saveStorage();
     }
     this.initPlayList = function(){
-        self.updatePlayerList();
+        self.updatePlayList();
         
         var show = !!self.current.player.listshow;
         var currentRight =0;
