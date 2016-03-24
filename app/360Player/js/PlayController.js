@@ -231,8 +231,6 @@ var PlayController = function(){
             $volumeContainer.hide();
             $videolistController.hide();
         })
-        
-        
     }
     this.updatePlayerList = function(){
         $videoList.find(".video-list-item").remove();

@@ -147,13 +147,13 @@ var createMenu = function(){
                 controller.togglePlayList();
             }
           },          
-          {
-            label: '切换播放控制',
-            accelerator: 'CmdOrCtrl+J',
-            click: function(item, focusedWindow) {
-                controller.togglePlayControl();
-            }
-          },
+//          {
+//            label: '切换播放控制',
+//            accelerator: 'CmdOrCtrl+J',
+//            click: function(item, focusedWindow) {
+//                controller.togglePlayControl();
+//            }
+//          },
         ]
       },
       {
@@ -244,7 +244,5 @@ var createMenu = function(){
 
     var menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
-    
-
 }
 
