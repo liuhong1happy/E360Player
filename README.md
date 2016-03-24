@@ -2,10 +2,6 @@
 
 `E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).
 
-## Roadmap
-
-- [ ] flat mode
-- [ ] drag & drop
 
 ## Download
 
@@ -25,6 +21,11 @@
         npm run pack-osx
 
 ## Changelog
+
+#### v0.5.0
+
+- [x] flat mode
+- [x] drag & drop
 
 #### v0.4.1
 
