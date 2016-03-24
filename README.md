@@ -29,6 +29,7 @@
 
 - [x] player theme
 - [x] save play list with local strage
+- [x] some bugs [3](issues/3)
 
 #### v0.4.0
 
