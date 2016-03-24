@@ -19,6 +19,12 @@
 
         # osx 
         npm run pack-osx
+        # windows 32
+        npm run pack-win32
+        # windows 64
+        npm run pack-win64
+        # linux
+        npm run pack-linux
 
 ## Changelog
 
