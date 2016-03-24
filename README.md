@@ -5,6 +5,7 @@
 ## Roadmap
 
 - [ ] flat mode
+- [ ] drag & drop
 
 ## Download
 
