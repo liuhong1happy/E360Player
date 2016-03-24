@@ -86,9 +86,11 @@ ipcMain.on('async-app-quit', function(event, arg) {
 ipcMain.on("sync-file-info",function(event,arg){
     const states = fs.statSync(arg);
     const basename = path.basename(arg);
+    const extname = path.extname(arg);
     event.returnValue = {
         name:basename,
         size:states.size,
-        src:arg
+        src:arg,
+        extname:extname
     }
 })

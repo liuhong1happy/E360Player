@@ -16,7 +16,9 @@ var createMenu = function(){
                         var files = ipcRenderer.sendSync('sync-open-file', null); 
                         if(files[0]){
                             const file_info = ipcRenderer.sendSync("sync-file-info",files[0])
-                            controller.addVideoToList(file_info);
+                            if(file_info.extname.toUpperCase()==".MP4"){
+                                controller.addVideoToList(file_info);
+                            }
                         }else{
                             console.log("not file")
                         }
@@ -243,5 +245,22 @@ var createMenu = function(){
 
     var menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
+    
+    
+    window.ondragover = function(e){
+        e.preventDefault();
+    }
+    window.ondrop = function(e){
+        e.preventDefault();
+        var files = e.dataTransfer.files;
+        if(files && files.length>0){
+            for(var i=0;i<files.length;i++){
+                    const file_info = ipcRenderer.sendSync("sync-file-info",files[i].path)
+                    if(file_info.extname.toUpperCase()==".MP4"){
+                        controller.addVideoToList(file_info);
+                    }
+            }
+        }
+    }
 }
 

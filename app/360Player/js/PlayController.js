@@ -634,6 +634,7 @@ var PlayController = function(){
             $videoContainer.css({"width":"auto"});
         }
     }
+
     
     this.init = function(){
         self.initPlayer();
