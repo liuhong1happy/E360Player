@@ -2,6 +2,9 @@
 
 `E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).
 
+## Roadmap
+
+- [ ] localization
 
 ## Download
 
