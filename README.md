@@ -5,6 +5,7 @@
 ## Roadmap
 
 - [ ] localization
+- [ ] play online video
 
 ## Download
 

@@ -8,7 +8,6 @@ var $flatScreenContainer = $("#flat-screen-container"), $flatScreenRect = $("#fl
 var flatScreen = document.getElementById("flat-screen");
 var flatScreenContext = flatScreen.getContext( '2d');
 
-
 var PlayerStorage = {
     getPlayList:function(){
         var json = window.localStorage.getItem("playlist");
@@ -646,10 +645,10 @@ var PlayController = function(){
     this.setFullScreen = function(flag){
         if(flag){
              $videoList.show();
-             $videoContainer.css({"width":"100%"});
+             $videoContainer.css({"width":"auto"});
         }else{
             $videoList.hide();
-            $videoContainer.css({"width":"auto"});
+            $videoContainer.css({"width":"100%"});
         }
     }
     
