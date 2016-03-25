@@ -154,7 +154,7 @@ var createMenu = function(){
             }
           },          
           {
-            label: '切换播放控制',
+            label: '切换平面模式',
             accelerator: (function() {
               if (process.platform == 'darwin')
                 return 'Alt+Command+J';
