@@ -299,12 +299,7 @@ var PlayController = function(){
             $iconPrevious.addClass("disabled");
         }
         
-        var handleDbClick = function(e){
-            e = e || event;
-            var target = e.target || e.srcElement;
-            var index = $(target).attr("data-index");
-            controller.playVideoByIndex(index);
-        }
+
         
 
         
@@ -911,6 +906,12 @@ var PlayController = function(){
                 self.updatePlayList();
             }
         }
+    this.handleDbClick = function(e){
+        e = e || event;
+        var target = e.target || e.srcElement;
+        var index = $(target).attr("data-index");
+        controller.playVideoByIndex(index);
+    }
     self = this;
     return this;
 }
