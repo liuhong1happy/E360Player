@@ -70,6 +70,11 @@ app.on('activate', function () {
 
 // In main process.
 
+ipcMain.on('sync-clear-history',function(event,arg){
+    mainWindow.webContents.clearHistory();
+    event.returnValue = true;
+})
+
 ipcMain.on('sync-open-file', function(event, arg) {
   const results = dialog.showOpenDialog({ properties: [ 'openFile'],filters: [{ name: 'Movies', extensions: ['mp4'] }]});
   var _results = results?results:[];
@@ -103,3 +108,4 @@ ipcMain.on("sync-file-info",function(event,arg){
         }
     }
 })
+

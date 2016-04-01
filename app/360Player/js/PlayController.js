@@ -873,6 +873,8 @@ var PlayController = function(){
         self.current.video = existPlayList[self.current.index];
         self.current.video.currentTime = 0;
         self.updatePlayList();
+        
+        ipcRenderer.sendSync("sync-clear-history",null);
     }
     
     this.saveStorage = function(){
