@@ -1,12 +1,34 @@
 var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#video-container"),$iconNext = $("#icon-next"),
     $iconPrevious = $("#icon-previous"),$videoList = $("#videolist-container"),$volumeContainer = $("#volume-container"),$playProgress = $("#play-progress"),
     $volumeProgress = $("#volume-progress"),$volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),$timebarButton = $("#timebar-button"),
-    $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),
-    $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller"),$videolistControllerSplitter = $("#videolist-controller-splitter");
+    $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),$progress = $("#progress"),
+    $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller"),$videolistControllerSplitter = $("#videolist-controller-splitter"),
+    $videoName = $("#video-name"), $videoPosition = $("#video-position");
 
 var $flatScreenContainer = $("#flat-screen-container"), $flatScreenRect = $("#flat-screen-rect");
 var flatScreen = document.getElementById("flat-screen");
 var flatScreenContext = flatScreen.getContext( '2d');
+
+var VideoTime = {
+    parse:function(time){
+        // time 时间戳 单位秒
+        time = parseInt(time);
+        
+        var toTwoChar = function(i){
+            return (i/100).toFixed(2).split(".")[1]
+        }
+        
+        if(time<60){
+            return "00:"+toTwoChar(time);
+        }else if(time<3600){
+            return toTwoChar(parseInt(time/60)) +":"+toTwoChar(time%60);
+        }else if(time<3600*24){
+            var hour = parseInt(time/3600);
+            var _time = time%3600;
+            return toTwoChar(hour)+":"+ toTwoChar(parseInt(_time/60)) +":"+toTwoChar(_time%60);
+        }
+    }
+}
 
 var PlayerStorage = {
     getPlayList:function(){
@@ -37,7 +59,7 @@ var PlayerStorage = {
             flatShow:true
         }:JSON.parse(json);
         return currentplayer;
-    }
+    },
 }
 
 var ToolTip = function(options){
@@ -237,11 +259,35 @@ var PlayController = function(){
             $volumeContainer.hide();
             $videolistController.hide();
         })
+        
+        $progress.click(function(e){
+            currentDuration = self.player.getVideoDuration();
+           
+            var mousePosition = {
+                    x:e.pageX,
+                    y:e.pageY
+            };
+            var widthSum = parseFloat($playProgress.width());
+            var left =parseFloat($playProgress.css("left"));
+            var percent = (mousePosition.x - left)*100 / widthSum;
+            
+            self.player.setVideoCurrentTime(currentDuration*percent/100);
+            $timebarButton.css({
+                left:percent+"%"
+            })
+            $timebar.css({
+                width:percent+"%"
+            })
+            e.stopPropagation();
+            return false;
+        })
     }
     this.updatePlayList = function(){
         $videoList.find(".video-list-item").remove();
         $videoList.find(".video-list-none").remove();
         if(self.playlist.length>0){
+            $iconNext.removeClass("disabled");
+            $iconPrevious.removeClass("disabled");
             for(var i=0;i<self.playlist.length;i++){
                 
                 var active = self.playlist[i].src == self.current.video.src;
@@ -263,6 +309,8 @@ var PlayController = function(){
                 })
             }
         }else{
+            $iconNext.addClass("disabled");
+            $iconPrevious.addClass("disabled");
             $videoList.append("<span class='video-list-none' style='padding:10px;color:#999;display:block;text-align:center;'>播放列表没有视频<span>");
         }
         $videolistController.unbind("click",self.togglePlayList);
@@ -375,15 +423,10 @@ var PlayController = function(){
         $videolistControllerSplitter.mouseup(handleMouseUp);
         window.addEventListener("mousemove",handleMouseMove);
         window.addEventListener("mouseup",handleMouseUp);
-        
     }
     this.initVolume = function(){
         $iconVolume.click(function(e){
             $volumeContainer.toggle();
-            e.stopPropagation();
-            return false;
-        })
-        $volumeContainer.click(function(e){
             e.stopPropagation();
             return false;
         })
@@ -476,6 +519,31 @@ var PlayController = function(){
             e.stopPropagation(); 
             return false;
         }    
+        
+        $volumeProgress.click(function(e){
+            if(!moving){
+                var mousePosition = {
+                        x:e.pageX,
+                        y:e.pageY
+                };
+                var volume = ($container.height() - mousePosition.y - 58) / 200;
+                if(volume>1) volume =1;
+                if(volume<0) volume = 0;
+                self.player.setVideoVolume(volume);
+                $volumebar.css({
+                    height:volume*100+"%"
+                })
+                $volumeButton.css({
+                    bottom:volume*200-9
+                })
+            }
+            e.stopPropagation();
+            return false;
+        })
+        $volumeContainer.click(function(e){
+            e.stopPropagation();
+            return false;
+        })
         
         $volumeButton.mousedown(handleMouseDown);
         $volumeButton.mousemove(handleMouseMove);
@@ -581,7 +649,7 @@ var PlayController = function(){
     }
 
     this.playVideoByIndex = function(index){
-        var index = parseInt(index);
+        index = parseInt(index);
         var filePath = self.playlist[index].src;
         // 修改播放器视频路径并开始播放
         self.player.pause();
@@ -701,6 +769,9 @@ var PlayController = function(){
             self.current.video.width = width;
             self.current.video.paused = false;
             document.title = "360度全景视频播放器-"+self.current.video.name
+            
+            $videoName.text(self.current.video.name);
+            $videoPosition.text( VideoTime.parse(currentTime)+" / "+ VideoTime.parse(duration));
         }else{
              document.title = "360度全景视频播放器"
         }
@@ -755,6 +826,7 @@ var PlayController = function(){
         PlayerStorage.setPlayList(self.playlist);
         PlayerStorage.setCurrentPlayer(self.current.player);
     }
+    
     self = this;
     return this;
 }

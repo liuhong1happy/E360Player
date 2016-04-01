@@ -194,7 +194,6 @@ var createMenu = function(){
         ]
       },
     ];
-
     if (process.platform == 'darwin') {
       var name = 'E360Player';
       template.unshift({
@@ -252,11 +251,8 @@ var createMenu = function(){
         }
       );
     }
-
     var menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
-    
-    
     window.ondragover = function(e){
         e.preventDefault();
     }
@@ -273,4 +269,3 @@ var createMenu = function(){
         }
     }
 }
-
