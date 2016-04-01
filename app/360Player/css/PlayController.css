@@ -230,6 +230,11 @@ body{
     background-color: rgba(238,238,238,0.1);
     color: #333;
 }
+#container #videolist-container .video-list-item.disabled,#container #videolist-container .video-list-item.disabled:hover{
+    background-color: transparent;
+    color:rgba(200,200,200,0.1);
+}
+
 #container #videolist-container .video-list-item:hover .item-close{
     display: inline-block;
 }

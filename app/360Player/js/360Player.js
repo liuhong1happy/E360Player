@@ -248,6 +248,9 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             getPlayerPhiDelta:function(){
                 return phiDelta;
+            },
+            setPlayerPhiDelta:function(phi){
+                phiDelta = phi;
             }
         }
     };

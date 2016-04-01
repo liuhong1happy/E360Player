@@ -36,8 +36,11 @@ var PlayerStorage = {
         var playlist = json==null ?[]:JSON.parse(json);
         for(var i=0;i<playlist.length;i++){
             var file_info = ipcRenderer.sendSync("sync-file-info",playlist[i].src);
-            playlist[i].name = file_info.name;
-            playlist[i].size = file_info.size;
+            playlist[i].exist = file_info.exist;
+            if(file_info.exist){
+                playlist[i].name = file_info.name;
+                playlist[i].size = file_info.size;
+            }
         }
         return playlist;
     },
@@ -285,32 +288,61 @@ var PlayController = function(){
     this.updatePlayList = function(){
         $videoList.find(".video-list-item").remove();
         $videoList.find(".video-list-none").remove();
-        if(self.playlist.length>0){
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
+        if(existPlayList.length>0){
             $iconNext.removeClass("disabled");
             $iconPrevious.removeClass("disabled");
+        }else{
+            $iconNext.addClass("disabled");
+            $iconPrevious.addClass("disabled");
+        }
+        
+        var handleDbClick = function(e){
+            e = e || event;
+            var target = e.target || e.srcElement;
+            var index = $(target).attr("data-index");
+            controller.playVideoByIndex(index);
+        }
+        
+
+        
+        if(self.playlist.length>0){
+            var index = 0;
             for(var i=0;i<self.playlist.length;i++){
+                var exist = self.playlist[i].exist;
                 
                 var active = self.playlist[i].src == self.current.video.src;
                 
-                var $videoListItem = $('<div class="video-list-item'+(active?" active":"")+'" id="video-list-item-'+i+'" data-index="'+i+'"></div>').appendTo($videoList);
-                var $itemName = $('<span class="item-name" data-index="'+i+'" title="'+self.playlist[i].name+'" >'+self.playlist[i].name+'</span>').appendTo($videoListItem);
+                var $videoListItem = $('<div class="video-list-item'+(active?" active":"") +(exist?"":" disabled")+'" id="video-list-item-'+i+'" data-i="'+i+'" data-index="'+index+'" draggable="true"></div>').appendTo($videoList);
+                var $itemName = $('<span class="item-name'+(exist?"":" disabled")+'" data-i="'+i+'" data-index="'+index+'" title="'+self.playlist[i].name+'" >'+self.playlist[i].name+'</span>').appendTo($videoListItem);
+                
                 var $itemClose = $('<span class="item-close" title="删除" id="item-close-'+i+'" data-index="'+i+'">&times;</span>').appendTo($videoListItem);
                 $itemClose.click(function(e){
                     e = e || event;
                     var target = e.target || e.srcElement;
                     var index = $(target).attr("data-index");
                     controller.removeVideoFromList(index);
+                    e.stopPropagation();
+                    return false;
                 })
-                $videoListItem.dblclick(function(e){
-                    e = e || event;
-                    var target = e.target || e.srcElement;
-                    var index = $(target).attr("data-index");
-                    controller.playVideoByIndex(index);
-                })
+                
+                $videoListItem.unbind("dragstart",self.handleDragStart);
+                $videoListItem.bind("dragstart",self.handleDragStart);
+                
+                if(exist){
+                    $videoListItem.unbind("dblclick",self.handleDbClick);
+                    $videoListItem.bind("dblclick",self.handleDbClick);
+                    index ++;
+                }
             }
+            
+            $videoList.unbind("dropover",self.handleDropOver);
+            $videoList.bind("dropover",self.handleDropOver);
+            $videoList.unbind("drop",self.handleDrop);
+            $videoList.bind("drop",self.handleDrop);
         }else{
-            $iconNext.addClass("disabled");
-            $iconPrevious.addClass("disabled");
             $videoList.append("<span class='video-list-none' style='padding:10px;color:#999;display:block;text-align:center;'>播放列表没有视频<span>");
         }
         $videolistController.unbind("click",self.togglePlayList);
@@ -576,6 +608,14 @@ var PlayController = function(){
     }
     this.initFlatScreen = function(){
         self.current.player.flatShow ? $flatScreenContainer.show() : $flatScreenContainer.hide();
+        
+        $flatScreenContainer.click(function(e){
+            var left = parseFloat(e.pageX) - parseFloat($flatScreenContainer.position().left);
+            var width = parseFloat($flatScreenContainer.width());
+            var v = left*360 / width;
+            var fov = self.player.getVideoFov();
+            self.player.setPlayerPhiDelta(360-v-fov);
+        })
     }
     this.togglePlay = function(){
         var paused = self.player.getVideoPaused();
@@ -588,45 +628,55 @@ var PlayController = function(){
         }
     }
     this.playPrevVideo = function(){
-        if(self.playlist.length>0){
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
+        if(existPlayList.length>0){
             var index = self.current.index;
-            index = (index+self.playlist.length-1)%self.playlist.length;
-            var filePath = self.playlist[index].src;
+            index = (index+existPlayList.length-1)%existPlayList.length;
+            var filePath = existPlayList[index].src;
             // 修改播放器视频路径并开始播放
             self.player.pause();
             self.player.setVideoSrc(filePath);
             self.togglePlay();
             self.player.play();
             self.current.index = index;
-            self.current.video = self.playlist[index];
+            self.current.video = existPlayList[index];
         }
     }
     this.playNextVideo = function(){
-        if(self.playlist.length>0){
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
+        if(existPlayList.length>0){
             var index = self.current.index;
-            index = (index+1)%self.playlist.length;
-            var filePath = self.playlist[index].src;
+            index = (index+1)%existPlayList.length;
+            var filePath = existPlayList[index].src;
             // 修改播放器视频路径并开始播放
             self.player.pause();
             self.player.setVideoSrc(filePath);
             self.togglePlay();
             self.player.play();
             self.current.index = index;
-            self.current.video = self.playlist[index];
+            self.current.video = existPlayList[index];
         }
     }
     this.addVideoToList = function(file_info){
-        var exists = self.playlist.filter(function(ele,pos){
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
+        var exists = existPlayList.filter(function(ele,pos){
             ele.index = pos;
             return ele.src == file_info.src;
         });
         if(exists.length>0){
             self.current.index = exists[0].index;
-            self.current.video = self.playlist[self.current.index];
+            self.current.video = existPlayList[self.current.index];
         }else{
             self.playlist.push(file_info);
-            self.current.index = self.playlist.length-1;
-            self.current.video = self.playlist[self.current.index];
+            existPlayList.push(file_info);
+            self.current.index = existPlayList.length-1;
+            self.current.video = existPlayList[self.current.index];
         }
         // 修改播放器视频路径并开始播放
         self.player.pause();
@@ -638,8 +688,11 @@ var PlayController = function(){
     this.removeVideoFromList = function(index){
         var i = parseInt(index);
         self.playlist.splice(i,1);
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
         if(self.current.index == i){
-            self.current.index = (self.current.index-1)%self.playlist.length;
+            self.current.index = (self.current.index-1)%existPlayList.length;
         }
         if(self.current.index>i){
              self.current.index = self.current.index-1;
@@ -650,13 +703,16 @@ var PlayController = function(){
 
     this.playVideoByIndex = function(index){
         index = parseInt(index);
-        var filePath = self.playlist[index].src;
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
+        var filePath = existPlayList[index].src;
         // 修改播放器视频路径并开始播放
         self.player.pause();
         self.player.setVideoSrc(filePath);
         self.player.play();
         self.current.index = index;
-        self.current.video = self.playlist[self.current.index];
+        self.current.video = existPlayList[self.current.index];
         // 更新播放列表
         self.updatePlayList();
     }
@@ -736,7 +792,6 @@ var PlayController = function(){
         var height = self.player.getVideoHeight();
         var fov = self.player.getVideoFov();
         var phi = self.player.getPlayerPhiDelta();
-        
         var rect_width = fov*2;
         var rect_right = phi%360;
         var rect_left = (360-rect_right)-fov*2;
@@ -777,20 +832,23 @@ var PlayController = function(){
         }
     }
     this.onended = function(){
-        if(self.playlist.length==0) return;
+        var existPlayList = self.playlist.filter(function(ele,pos){
+            return ele.exist;
+        })
+        if(existPlayList.length==0) return;
         if(self.current.player.loopType == "repeat-once") return;
         if(self.current.player.loopType == "once"){
             self.player.pause();
             self.player.setVideoCurrentTime(0);
         }
         if(self.current.player.loopType == "order"){
-            if(self.current.index==self.playlist.length-1){
+            if(self.current.index==existPlayList.length-1){
                 self.player.pause();
                 self.player.setVideoCurrentTime(0);
                 return;
             }
-            var index = (self.current.index+1) % self.playlist.length;
-            var src = self.playlist[index].src;
+            var index = (self.current.index+1) % existPlayList.length;
+            var src = existPlayList[index].src;
             self.player.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
@@ -798,8 +856,8 @@ var PlayController = function(){
             self.current.index = index;
         }
         if(self.current.player.loopType == "all-repeat"){
-            var index = (self.current.index+1) % self.playlist.length;
-            var src = self.playlist[index].src;
+            var index = (self.current.index+1) % existPlayList.length;
+            var src = existPlayList[index].src;
             self.player.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
@@ -809,15 +867,15 @@ var PlayController = function(){
 
         if(self.current.player.loopType == "shuffle"){
             var index = new Date().valueOf();
-            index = (index+1) % self.playlist.length;
-            var src = self.playlist[index].src;
+            index = (index+1) % existPlayList.length;
+            var src = existPlayList[index].src;
             self.player.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
             self.player.play();
             self.current.index = index;
         }
-        self.current.video = self.playlist[self.current.index];
+        self.current.video = existPlayList[self.current.index];
         self.current.video.currentTime = 0;
         self.updatePlayList();
     }
@@ -826,7 +884,33 @@ var PlayController = function(){
         PlayerStorage.setPlayList(self.playlist);
         PlayerStorage.setCurrentPlayer(self.current.player);
     }
-    
+    this.handleDragStart = function(e){
+            e = e || event;
+            var target = e.target || e.srcElement;
+            var index = $(target).attr("data-i");
+            event.dataTransfer.setData("video-list-drag-index",index);
+        };
+    this.handleDropOver = function(e){
+            e = e || event;
+            e.preventDefault();
+        };
+    this.handleDrop = function(e){
+            e = e || event;
+            var target = e.target || e.srcElement;
+            e.preventDefault();
+            var index = parseInt(event.dataTransfer.getData("video-list-drag-index"));
+            if(target.id=="videolist-container"){
+                var deleteObj = self.playlist.splice(index,1);
+                self.playlist.push(deleteObj[0]);
+                self.updatePlayList();
+            }
+            if(target.className.indexOf("video-list-item") !=-1 || target.className.indexOf("item-name")!=-1){
+                var exchangeIndex = $(target).attr("data-i");
+                var deleteObj = self.playlist.splice(index,1);
+                self.playlist.splice(exchangeIndex,0, deleteObj[0]);
+                self.updatePlayList();
+            }
+        }
     self = this;
     return this;
 }
