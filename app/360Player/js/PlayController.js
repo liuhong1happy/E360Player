@@ -117,22 +117,10 @@ var PlayController = function(){
     }
     this.initController = function(){
         $iconPlay.click(function(e){
-            self.togglePlay();
-            var paused = self.player.getVideoPaused();
-            var tooltip = new ToolTip();
-            tooltip.show({
-                content:"播放控制<span style='color:darkcyan;'>"+(paused?"暂停":"播放")+"</span>"
-            })
-            tooltip.hide();
+            self.togglePlay(true);
         });
         $videoContainer.dblclick(function(e){
-            self.togglePlay();
-            var paused = self.player.getVideoPaused();
-            var tooltip = new ToolTip();
-            tooltip.show({
-                content:"播放控制<span style='color:darkcyan;'>"+(paused?"暂停":"播放")+"</span>"
-            })
-            tooltip.hide();
+            self.togglePlay(true);
         })
         $iconNext.click(function(e){
             self.playNextVideo();
@@ -150,12 +138,13 @@ var PlayController = function(){
             })
             tooltip.hide();
         })
-        var hoverStatus = $iconPlay.hasClass("icon-play2");
+        var hoverStatus = self.player.getVideoPaused();
         $timebarButton.hover(function(e){
-            self.player.pause();
+            hoverStatus = self.player.getVideoPaused();
+            self.pause();
         },function(e){
-            if(hoverStatus) self.player.pause();
-            else self.player.play();
+            if(hoverStatus) self.pause();
+            else self.play(false);
         })
         
         var moving = false,currentLeft = 0, downPositoin = {x:0,y:0},mousePosition = {x:0,y:0},currentWidthSum = 0,currentDuration = 0,currentPlayStatus=true;
@@ -169,7 +158,7 @@ var PlayController = function(){
             currentWidthSum = parseFloat($playProgress.width());
             currentPlayStatus = $iconPlay.hasClass("icon-play2");
             currentDuration = self.player.getVideoDuration();
-            self.player.pause();
+            self.pause();
             moving = true;
             e.stopPropagation(); 
             return false;
@@ -177,7 +166,7 @@ var PlayController = function(){
 
         var handleMouseMove = function(e){
             if(moving){
-                self.player.pause();
+                self.pause();
                 
                 mousePosition = {
                     x:e.clientX,
@@ -235,8 +224,8 @@ var PlayController = function(){
                 }
                 moving = false;
 
-                if(currentPlayStatus) self.player.pause();
-                else self.player.play();
+                if(currentPlayStatus) self.pause();
+                else self.play();
             }
             e.stopPropagation(); 
             return false;
@@ -580,23 +569,34 @@ var PlayController = function(){
 
         $container.bind("click",handleHideVolume);
     }
+
+    this.setLoopTypeByIndex = function(index){
+        var player = self.current.player;
+        var loopTypes = self.loopTypes;
+        $loopButton.removeClass(player.loopIcon);
+        player.loopIndex = index;
+        var loopType = loopTypes[player.loopIndex];
+        player.loopIcon = loopType.className;
+        player.loopName = loopType.name;
+        player.loopType = loopType.id;
+        $loopButton.addClass(player.loopIcon);
+        $loopButton.attr("title",player.loopName);
+        var tooltip = new ToolTip();
+        tooltip.show({
+            content:"循环播放方式切换为<span style='color:darkcyan;'>"+player.loopName+"</span>"
+        })
+        tooltip.hide();
+        self.saveStorage();
+    }
+    
     this.initLoopType = function(){
+        var player = self.current.player;
+        var loopTypes = self.loopTypes;
+        $loopButton.addClass(player.loopIcon);
+        $loopButton.attr("title",player.loopName);
         $loopButton.click(function(e){
-            var player = self.current.player;
-            var loopTypes = self.loopTypes;
-            $loopButton.removeClass(player.loopIcon);
             player.loopIndex = (player.loopIndex+1) % loopTypes.length;
-            var loopType = loopTypes[player.loopIndex];
-            player.loopIcon = loopType.className;
-            player.loopName = loopType.name;
-            player.loopType = loopType.id;
-            $loopButton.addClass(player.loopIcon);
-            $loopButton.attr("title",player.loopName);
-            var tooltip = new ToolTip();
-            tooltip.show({
-                content:"循环播放方式切换为<span style='color:darkcyan;'>"+player.loopName+"</span>"
-            })
-            tooltip.hide();
+            self.setLoopTypeByIndex(player.loopIndex);
             e.stopPropagation();
             return false;
         })
@@ -612,7 +612,15 @@ var PlayController = function(){
             self.player.setPlayerPhiDelta(360-v-fov);
         })
     }
-    this.togglePlay = function(){
+    this.showPlayTip = function(){
+        var paused = self.player.getVideoPaused();
+        var tooltip = new ToolTip();
+        tooltip.show({
+            content:"播放控制<span style='color:darkcyan;'>"+(paused?"暂停":"播放")+"</span>"
+        })
+        tooltip.hide();
+    }
+    this.togglePlay = function(isShowTip){
         var paused = self.player.getVideoPaused();
         if(paused){
             self.player.play();
@@ -621,7 +629,19 @@ var PlayController = function(){
             self.player.pause();
             $iconPlay.addClass("icon-play2").removeClass("icon-pause");
         }
+        if(isShowTip) self.showPlayTip();
     }
+    this.pause = function(isShowTip){
+        self.player.pause();
+        $iconPlay.addClass("icon-play2").removeClass("icon-pause");
+        if(isShowTip) self.showPlayTip();
+    }
+    this.play = function(isShowTip){
+        self.player.play();
+        $iconPlay.removeClass("icon-play2").addClass("icon-pause");
+        if(isShowTip) self.showPlayTip();
+    }
+    
     this.playPrevVideo = function(){
         var existPlayList = self.playlist.filter(function(ele,pos){
             return ele.exist;
@@ -631,13 +651,13 @@ var PlayController = function(){
             index = (index+existPlayList.length-1)%existPlayList.length;
             var filePath = existPlayList[index].src;
             // 修改播放器视频路径并开始播放
-            self.player.pause();
+            self.pause();
             self.player.setVideoSrc(filePath);
-            self.togglePlay();
-            self.player.play();
+            self.play();
             self.current.index = index;
             self.current.video = existPlayList[index];
         }
+        self.updatePlayList();
     }
     this.playNextVideo = function(){
         var existPlayList = self.playlist.filter(function(ele,pos){
@@ -648,13 +668,13 @@ var PlayController = function(){
             index = (index+1)%existPlayList.length;
             var filePath = existPlayList[index].src;
             // 修改播放器视频路径并开始播放
-            self.player.pause();
+            self.pause();
             self.player.setVideoSrc(filePath);
-            self.togglePlay();
-            self.player.play();
+            self.play();
             self.current.index = index;
             self.current.video = existPlayList[index];
         }
+        self.updatePlayList();
     }
     this.addVideoToList = function(file_info){
         var existPlayList = self.playlist.filter(function(ele,pos){
@@ -674,9 +694,9 @@ var PlayController = function(){
             self.current.video = existPlayList[self.current.index];
         }
         // 修改播放器视频路径并开始播放
-        self.player.pause();
+        self.pause();
         self.player.setVideoSrc(file_info.src);
-        self.player.play();
+        self.play();
         // 更新播放列表
         self.updatePlayList();
     }
@@ -703,9 +723,9 @@ var PlayController = function(){
         })
         var filePath = existPlayList[index].src;
         // 修改播放器视频路径并开始播放
-        self.player.pause();
+        self.pause();
         self.player.setVideoSrc(filePath);
-        self.player.play();
+        self.play();
         self.current.index = index;
         self.current.video = existPlayList[self.current.index];
         // 更新播放列表
@@ -831,32 +851,36 @@ var PlayController = function(){
             return ele.exist;
         })
         if(existPlayList.length==0) return;
-        if(self.current.player.loopType == "repeat-once") return;
+        if(self.current.player.loopType == "repeat-once") {
+            self.pause();
+            self.player.setVideoCurrentTime(0);
+            self.play();
+        };
         if(self.current.player.loopType == "once"){
-            self.player.pause();
+            self.pause();
             self.player.setVideoCurrentTime(0);
         }
         if(self.current.player.loopType == "order"){
             if(self.current.index==existPlayList.length-1){
-                self.player.pause();
+                self.pause();
                 self.player.setVideoCurrentTime(0);
                 return;
             }
             var index = (self.current.index+1) % existPlayList.length;
             var src = existPlayList[index].src;
-            self.player.pause();
+            self.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
-            self.player.play();
+            self.play(false);
             self.current.index = index;
         }
         if(self.current.player.loopType == "all-repeat"){
             var index = (self.current.index+1) % existPlayList.length;
             var src = existPlayList[index].src;
-            self.player.pause();
+            self.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
-            self.player.play();
+            self.play(false);
             self.current.index = index;
         }
 
@@ -864,10 +888,10 @@ var PlayController = function(){
             var index = new Date().valueOf();
             index = (index+1) % existPlayList.length;
             var src = existPlayList[index].src;
-            self.player.pause();
+            self.pause();
             self.player.setVideoSrc(src);
             self.player.setVideoCurrentTime(0);
-            self.player.play();
+            self.play(false);
             self.current.index = index;
         }
         self.current.video = existPlayList[self.current.index];
