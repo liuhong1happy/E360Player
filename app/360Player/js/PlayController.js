@@ -103,15 +103,22 @@ var PlayController = function(){
     this.current = {
         index:0,
         video:{
-            name:null
+            name:"L2_1920_3_25.mp4",
+            src:"http://cache.utovr.com/s1hevpqyxzguso2zfs/L2_1920_3_25.mp4",
+            size:0,
+            online:true,
+            extname:".mp4",
+            exist:true
         },
         player:PlayerStorage.getCurrentPlayer()
     };
     this.player = null;
     this.initPlayer = function(){
-        
         var player  = new E360Palyer(document.getElementById("video-container"),null);
         player.init();
+        if(self.current.video && self.current.video.src){
+            player.setVideoSrc(self.current.video.src);
+        }
         player.resize($videoContainer.width(),$videoContainer.height());
         player.play();
         window.onresize = function(){

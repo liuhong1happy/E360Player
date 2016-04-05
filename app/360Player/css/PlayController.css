@@ -193,13 +193,13 @@ body{
     margin-top: -3px;
 }
 #controller #play-progress #timebar{
-    width: 50%;
+    width: 0%;
     background-color: darkcyan;
     height: 4px;
 }
 #controller #play-progress #timebar-button{
     position: absolute;
-    left: 50%;
+    left: 0%;
     top: 0px;
     margin-top: -6px;
     margin-left: -5px;
