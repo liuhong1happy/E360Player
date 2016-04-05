@@ -109,3 +109,20 @@ ipcMain.on("sync-file-info",function(event,arg){
     }
 })
 
+ipcMain.on("sync-read-dir",function(event,arg){
+    if(fs.existsSync(arg)){
+        const localization = fs.readdirSync(arg);
+        event.returnValue = localization;
+    }else{
+        event.returnValue = [];
+    }
+})
+
+ipcMain.on("sync-read-jsonfile",function(event,arg){
+    if(fs.existsSync(arg)){
+        const fileData = fs.readFileSync(arg,{encoding:"utf8"});
+        event.returnValue = JSON.parse(fileData);
+    }else{
+        event.returnValue = [];
+    }
+})

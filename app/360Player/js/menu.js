@@ -269,5 +269,3 @@ var createMenu = function(){
         }
     }
 }
-
-
