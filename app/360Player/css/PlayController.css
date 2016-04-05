@@ -185,11 +185,37 @@ body{
 }
 #controller #play-progress #progress{
     width: 100%;
-    background-color: #999;
+    background-color: rgba(200,200,200,0.6);
     height: 4px;
+    position: absolute;
+    left:0px;
+    top: 0px;
 }
-#controller #play-progress:hover #progress,#controller #play-progress:hover #timebar{
+#controller #play-progress #buffered-progress{
+    width: 100%;
+    background-color: transparent;
+    height: 4px;
+    position: relative;
+    left: 0px;
+    top: 0px;
+}
+#controller #play-progress #buffered-progress .buffered-bar{
+    background-color: #ddd;
+    position: absolute;
+    height: 100%;
+    top: 0px;
+}
+
+#controller #play-progress:hover #progress,
+#controller #play-progress:hover #timebar,
+#controller #play-progress:hover #buffered-progress{
     height: 10px;
+}
+
+#controller #play-progress:hover{
+    margin-top: -3px;
+}
+#controller #play-progress:hover #timebar-button{
     margin-top: -3px;
 }
 #controller #play-progress #timebar{
@@ -197,6 +223,7 @@ body{
     background-color: darkcyan;
     height: 4px;
 }
+
 #controller #play-progress #timebar-button{
     position: absolute;
     left: 0%;

@@ -251,6 +251,9 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             setPlayerPhiDelta:function(phi){
                 phiDelta = phi;
-            }
+            },
+            getVideoBuffered:function(){
+                return video.buffered;
+            },
         }
     };

@@ -3,7 +3,7 @@ var $iconPlay = $("#icon-play"),$timebar = $("#timebar"),$videoContainer = $("#v
     $volumeProgress = $("#volume-progress"),$volumebar = $("#volumebar"),$iconVolume = $("#icon-volume"),$timebarButton = $("#timebar-button"),
     $volumeButton = $("#volume-button"),$loopButton = $("#loop-button"),$container=$("#container"),$controller=$("#controller"),$progress = $("#progress"),
     $videolistControllerButton = $("#videolist-controller-button"),$videolistController=$("#videolist-controller"),$videolistControllerSplitter = $("#videolist-controller-splitter"),
-    $videoName = $("#video-name"), $videoPosition = $("#video-position");
+    $videoName = $("#video-name"), $videoPosition = $("#video-position"),$bufferedProgress = $("#buffered-progress");
 
 var $flatScreenContainer = $("#flat-screen-container"), $flatScreenRect = $("#flat-screen-rect");
 var flatScreen = document.getElementById("flat-screen");
@@ -855,8 +855,25 @@ var PlayController = function(){
             
             $videoName.text(self.current.video.name);
             $videoPosition.text( VideoTime.parse(currentTime)+" / "+ VideoTime.parse(duration));
-        }else{
+        }
+        else{
              document.title = i18n.prop("title");
+        }
+        
+        if(self.current.video && self.current.video.online){
+            $bufferedProgress.html("");
+            var buffered =  self.player.getVideoBuffered();
+            if(buffered && buffered.length>0 && duration>0){
+                for(var i=0;i<buffered.length;i++){
+                    var start = buffered.start(i);
+                    var end = buffered.end(i);
+                    var $bufferedBar = $("<div class='buffered-bar'></div>").appendTo($bufferedProgress);
+                    $bufferedBar.css({
+                        left:(start*100/duration).toFixed(2)+"%",
+                        width:((end-start)*100/duration).toFixed(2)+"%"
+                    })
+                }
+            }
         }
     }
     this.onended = function(){

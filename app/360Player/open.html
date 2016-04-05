@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>打开视频地址</title>
+    <script>
+        const electron = require('electron');
+        const ipcRenderer = electron.ipcRenderer;
+    </script>
+    <script src="i18n/i18n.js"></script>
+    <style>
+        body{
+            background-color: azure;
+            color:  brown;
+        }
+        #btn-ok{
+            margin: 20px 40px;
+            background-color:darkseagreen;
+            color: white;
+            font-size: 14px;
+            padding: 6px 24px;
+            cursor: pointer;
+            box-shadow: 1px 1px 3px black;
+        }
+        #btn-container{
+            text-align: center;
+        }
+    </style>
+  </head>
+  <body>
+    <input id="video-url" type="text" placehodler="请输入视频地址" />
+    <div id="btn-container">
+        <a role="button" id="btn-ok"></a>
+    </div>
+    <script>
+        // init i18n
+        i18n.init();  
+        var videoUrl = document.getElementById("video-url");
+        
+        document.getElementById("btn-ok").innerHTML = i18n.prop("switch-language.btn-ok");
+        // ok
+        document.getElementById("btn-ok").onclick = function(){
+            if(videoUrl.value!=""){
+                ipcRenderer.send("async-open-video-by-url",videoUrl.value);
+            }else{
+                alert("输入框不能为空");
+            }
+        }
+    </script>
+  </body>
+</html>

@@ -37,12 +37,19 @@ function createWindow () {
   // Emitted when the window is closed.
   mainWindow.on("close",function(event){
         var ok = dialog.showMessageBox({type:"question",title:"询问",message:"确定要退出吗？",buttons:["确定","取消"],defaultId:0,cancelId:1});
-        if(ok==1) event.preventDefault();
+        if(ok==1){
+            event.preventDefault();
+        }
+      
   })
   mainWindow.on('closed', function() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    var windows = BrowserWindow.getAllWindows();
+    for(var i=0;i<windows.length;i++){
+        if(mainWindow!=windows[i]) windows[i].close();
+    }
     mainWindow = null;
   });
 }
@@ -128,15 +135,33 @@ ipcMain.on("sync-read-jsonfile",function(event,arg){
 })
 
 ipcMain.on("sync-open-about",function(event,arg){
-    var aboutWin = new BrowserWindow({width: 360, height: 200,darkTheme:true});
+    var aboutWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
+    if(aboutWin.setMenu) aboutWin.setMenu(null);
     aboutWin.loadURL('file://' + __dirname + '/360Player/about.html');
     event.returnValue = true;
 })
 
 ipcMain.on("sync-open-lang",function(event,arg){
-    var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true});
+    var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
+    if(langWin.setMenu) langWin.setMenu(null);
     langWin.loadURL('file://' + __dirname + '/360Player/language.html');
     event.returnValue = true;
+})
+
+ipcMain.on('sync-open-video-by-url',function(event,arg){
+    var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
+    if(langWin.setMenu) langWin.setMenu(null);
+    langWin.loadURL('file://' + __dirname + '/360Player/open.html');
+    event.returnValue = true;
+})
+
+ipcMain.on("async-open-video-by-url",function(event,arg){
+    event.sender.send('replay-open-video-by-url',arg);
+    
+    var windows = BrowserWindow.getAllWindows();
+    for(var i=0;i<windows.length;i++){
+        if(mainWindow!=windows[i]) windows[i].close();
+    }
 })
 
 ipcMain.on('change-language',function(event,arg){

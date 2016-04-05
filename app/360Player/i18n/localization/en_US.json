@@ -1,8 +1,8 @@
 {
     "name":"English",
     "title":"E360Player",
-    "description":"<h1>E360Player</h1><p>E360Player is the 360° Video Player with electron.Current Product Version is v0.5.0. </p>",
-    "please-select-language":"please select a language from the list：",
+    "description":"<h1>E360Player</h1><p>E360Player is the 360° Video Player with electron.Current version is v0.5.0. </p>",
+    "please-select-language":"Please select a language from the list:",
     "play-controller":{
         "loop-types":{
             "all-repeat":"All Repeat",
@@ -21,6 +21,7 @@
     "menu":{
         "file":"File",
         "open-video":"Open Video",
+        "open-video-by-url":"Open Online Video",
         "exit":"Exit",
         "play-control":"Play Control",
         "toggle-play":"Toggle Play/Pause",
