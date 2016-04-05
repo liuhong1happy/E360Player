@@ -55,7 +55,7 @@ var PlayerStorage = {
         var currentplayer = json==null ?{
             loopType:"all-repeat", // 循环方式 ["循环播放","顺序播放","随机播放","单视频循环","单视频播放"]
             loopIndex:0,
-            loopName:"循环播放",
+            loopName: i18n.prop("play-controller.loop-types.all-repeat"),
             loopIcon:"icon-loop",
             listWidth:300,
             listShow:true,
@@ -93,7 +93,13 @@ var ToolTip = function(options){
 var PlayController = function(){
     var self = {};
     this.playlist = PlayerStorage.getPlayList();
-    this.loopTypes = [{id:"all-repeat",name:"循环播放",className:"icon-loop"},{id:"order",name:"顺序播放",className:"icon-list"},{id:"shuffle",name:"随机播放",className:"icon-shuffle"},{id:"repeat-once",name:"单视频循环",className:"icon-loop2"},{id:"once",name:"单视频播放",className:"icon-switch"}]
+    this.loopTypes = [
+        {id:"all-repeat",name: i18n.prop("play-controller.loop-types.all-repeat"),className:"icon-loop"},
+        {id:"order",name:i18n.prop("play-controller.loop-types.order"),className:"icon-list"},
+        {id:"shuffle",name:i18n.prop("play-controller.loop-types.shuffle"),className:"icon-shuffle"},
+        {id:"repeat-once",name:i18n.prop("play-controller.loop-types.repeat-once"),className:"icon-loop2"},
+        {id:"once",name:i18n.prop("play-controller.loop-types.once"),className:"icon-switch"}
+    ]
     this.current = {
         index:0,
         video:{
@@ -126,7 +132,7 @@ var PlayController = function(){
             self.playNextVideo();
             var tooltip = new ToolTip();
             tooltip.show({
-                content:"播放控制<span style='color:darkcyan;'>下一视频</span>"
+                content: i18n.prop("play-controller.play-control") +"<span style='color:darkcyan;'>"+i18n.prop("play-controller.next-video")+"</span>"
             })
             tooltip.hide();
         })
@@ -134,7 +140,7 @@ var PlayController = function(){
             self.playPrevVideo();
             var tooltip = new ToolTip();
             tooltip.show({
-                content:"播放控制<span style='color:darkcyan;'>上一视频</span>"
+                content: i18n.prop("play-controller.play-control") + "<span style='color:darkcyan;'>"+i18n.prop("play-controller.prev-video")+"</span>"
             })
             tooltip.hide();
         })
@@ -583,7 +589,7 @@ var PlayController = function(){
         $loopButton.attr("title",player.loopName);
         var tooltip = new ToolTip();
         tooltip.show({
-            content:"循环播放方式切换为<span style='color:darkcyan;'>"+player.loopName+"</span>"
+            content:i18n.prop("play-controller.loop-control")+ "<span style='color:darkcyan;'>"+player.loopName+"</span>"
         })
         tooltip.hide();
         self.saveStorage();
@@ -616,7 +622,7 @@ var PlayController = function(){
         var paused = self.player.getVideoPaused();
         var tooltip = new ToolTip();
         tooltip.show({
-            content:"播放控制<span style='color:darkcyan;'>"+(paused?"暂停":"播放")+"</span>"
+            content: i18n.prop("play-controller.play-control") + "<span style='color:darkcyan;'>"+(paused? i18n.prop("play-controller.pause"):i18n.prop("play-controller.play"))+"</span>"
         })
         tooltip.hide();
     }
@@ -838,12 +844,12 @@ var PlayController = function(){
             self.current.video.height = height;
             self.current.video.width = width;
             self.current.video.paused = false;
-            document.title = "360度全景视频播放器-"+self.current.video.name
+            document.title = i18n.prop("title")+ "-"+self.current.video.name
             
             $videoName.text(self.current.video.name);
             $videoPosition.text( VideoTime.parse(currentTime)+" / "+ VideoTime.parse(duration));
         }else{
-             document.title = "360度全景视频播放器"
+             document.title = i18n.prop("title");
         }
     }
     this.onended = function(){

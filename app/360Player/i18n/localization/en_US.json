@@ -1,4 +1,53 @@
-// en_US.json
 {
-    name:"E360Player"
+    "name":"English",
+    "title":"E360Player",
+    "description":"<h1>E360Player</h1><p>E360Player is the 360° Video Player with electron.Current Product Version is v0.5.0. </p>",
+    "please-select-language":"please select a language from the list：",
+    "play-controller":{
+        "loop-types":{
+            "all-repeat":"All Repeat",
+            "order":"Order",
+            "shuffle":"Shuffle",
+            "repeat-once":"Repeat Once",
+            "once":"Once"
+        },
+        "play-control":"Play Control",
+        "next-video":"Next Video",
+        "prev-video":"Prev Video",
+        "loop-control":"Loop Type:",
+        "pause":"Pause",
+        "play":"Play"
+    },
+    "menu":{
+        "file":"File",
+        "open-video":"Open Video",
+        "exit":"Exit",
+        "play-control":"Play Control",
+        "toggle-play":"Toggle Play/Pause",
+        "next-video":"Next Video",
+        "prev-video":"Prev Video",
+        "edit":"Edit",
+        "undo":"Undo",
+        "redo":"Redo",
+        "cut":"Cut",
+        "copy":"Copy",
+        "paste":"Paste",
+        "selectall":"Select All",
+        "view":"View",
+        "reload":"Reload",
+        "switch-language":"Switch Languge",
+        "toggle-fullscreen":"Toggle FullScreen",
+        "toggle-devtools":"Toggle DevTools",
+        "toggle-playlist":"Toggle PlayList",
+        "toggle-flatscreen":"Toggle FlatScreen",
+        "window":"Window",
+        "minimize":"Minimize",
+        "close":"Close",
+        "help":"Help",
+        "about-product":"About Product",
+        "about-electron":"About Electron"
+    },
+    "switch-language":{
+        "btn-ok":"OK"
+    }
 }

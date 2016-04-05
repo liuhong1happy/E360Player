@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>关于产品</title>
+    <script>
+        const electron = require('electron');
+        const ipcRenderer = electron.ipcRenderer;
+    </script>
+    <script src="i18n/i18n.js"></script>
+    <style>
+        body{
+            background-color: azure;
+            color:  brown;
+        }
+        #product-description{
+            margin: 20px 40px;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="product-description"></div>
+    <script>
+        // init i18n
+        i18n.init();  
+        document.title = i18n.prop("menu.about-product");
+        // description
+        document.getElementById("product-description").innerHTML = i18n.prop("description");
+    </script>
+  </body>
+</html>

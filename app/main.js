@@ -126,3 +126,25 @@ ipcMain.on("sync-read-jsonfile",function(event,arg){
         event.returnValue = [];
     }
 })
+
+ipcMain.on("sync-open-about",function(event,arg){
+    var aboutWin = new BrowserWindow({width: 360, height: 200,darkTheme:true});
+    aboutWin.loadURL('file://' + __dirname + '/360Player/about.html');
+    event.returnValue = true;
+})
+
+ipcMain.on("sync-open-lang",function(event,arg){
+    var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true});
+    langWin.loadURL('file://' + __dirname + '/360Player/language.html');
+    event.returnValue = true;
+})
+
+ipcMain.on('change-language',function(event,arg){
+    var windows = BrowserWindow.getAllWindows();
+    for(var i=0;i<windows.length;i++){
+        if(mainWindow!=windows[i]) windows[i].close();
+        else windows[i].reload();
+    }
+    event.returnValue = true;
+})
+

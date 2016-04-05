@@ -3,14 +3,15 @@ const remote = electron.remote;
 const Menu = remote.Menu;
 const MenuItem = remote.MenuItem;
 const ipcRenderer = electron.ipcRenderer;
+const BrowserWindow = remote.BrowserWindow;
 
 var createMenu = function(){
     var template = [
         {
-            label:"文件" ,
+            label: i18n.prop("menu.file") ,
             submenu:[
                 {
-                    label:"打开视频",
+                    label: i18n.prop("menu.open-video"),
                     accelerator: 'CmdOrCtrl+O',
                     click: function(item, focusedWindow) {
                         var files = ipcRenderer.sendSync('sync-open-file', null); 
@@ -28,31 +29,31 @@ var createMenu = function(){
                     type: 'separator'
                 },
                 {
-                    label: '退出',
+                    label: i18n.prop("menu.exit"),
                     accelerator: 'CmdOrCtrl+W',
                     role: 'close'
                 }
             ]
         },
       {
-        label: '播放控制',
+        label:  i18n.prop("menu.play-control"),
         submenu: [
           {
-            label: '暂停/播放',
+            label:  i18n.prop("menu.toggle-play"),
             accelerator: 'CmdOrCtrl+P',
             click: function(item, focusedWindow) {
                 controller.togglePlay();
             }
            },
           {
-            label: '上一视频',
+            label:  i18n.prop("menu.prev-video"),
             accelerator: 'CmdOrCtrl+L',
             click: function(item, focusedWindow) {
                     controller.playPrevVideo();
             }
           },
           {
-            label: '下一视频',
+            label:  i18n.prop("menu.next-video"),
             aaccelerator: 'CmdOrCtrl+N',
             click: function(item, focusedWindow) {
                controller.playNextVideo();
@@ -61,15 +62,15 @@ var createMenu = function(){
         ]
       },
       {
-        label: '编辑',
+        label:  i18n.prop("menu.edit"),
         submenu: [
           {
-            label: '撤销',
+            label: i18n.prop("menu.undo"),
             accelerator: 'CmdOrCtrl+Z',
             role: 'undo'
           },
           {
-            label: '重做',
+            label:  i18n.prop("menu.redo"),
             accelerator: 'Shift+CmdOrCtrl+Z',
             role: 'redo'
           },
@@ -77,32 +78,32 @@ var createMenu = function(){
             type: 'separator'
           },
           {
-            label: '剪切',
+            label: i18n.prop("menu.cut"),
             accelerator: 'CmdOrCtrl+X',
             role: 'cut'
           },
           {
-            label: '复制',
+            label:  i18n.prop("menu.copy"),
             accelerator: 'CmdOrCtrl+C',
             role: 'copy'
           },
           {
-            label: '粘贴',
+            label: i18n.prop("menu.paste"),
             accelerator: 'CmdOrCtrl+V',
             role: 'paste'
           },
           {
-            label: '全选',
+            label:  i18n.prop("menu.selectall"),
             accelerator: 'CmdOrCtrl+A',
             role: 'selectall'
           },
         ]
       },
       {
-        label: '视图',
+        label: i18n.prop("menu.view"),
         submenu: [
           {
-            label: '刷新',
+            label: i18n.prop("menu.reload"),
             accelerator: 'CmdOrCtrl+R',
             click: function(item, focusedWindow) {
               if (focusedWindow)
@@ -110,7 +111,19 @@ var createMenu = function(){
             }
           },
           {
-            label: '切换全屏',
+            type: 'separator'
+          },
+          {
+            label: i18n.prop("menu.switch-language"),
+            click: function(){
+                ipcRenderer.sendSync("sync-open-lang");
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: i18n.prop("menu.toggle-fullscreen"),
             accelerator: (function() {
               if (process.platform == 'darwin')
                 return 'Ctrl+Command+F';
@@ -126,7 +139,7 @@ var createMenu = function(){
                   }
           },
           {
-            label: '切换开发工具',
+            label: i18n.prop("menu.toggle-devtools"),
             accelerator: (function() {
               if (process.platform == 'darwin')
                 return 'Alt+Command+I';
@@ -142,7 +155,7 @@ var createMenu = function(){
             type: 'separator'
           },
           {
-            label: '切换播放列表',
+            label:  i18n.prop("menu.toggle-playlist"),
             accelerator: (function() {
               if (process.platform == 'darwin')
                 return 'Alt+Command+H';
@@ -154,7 +167,7 @@ var createMenu = function(){
             }
           },          
           {
-            label: '切换平面模式',
+            label:   i18n.prop("menu.toggle-flatscreen"),
             accelerator: (function() {
               if (process.platform == 'darwin')
                 return 'Alt+Command+J';
@@ -168,28 +181,34 @@ var createMenu = function(){
         ]
       },
       {
-        label: '窗体',
+        label:  i18n.prop("menu.window"),
         role: 'window',
         submenu: [
           {
-            label: '最小化',
+            label:   i18n.prop("menu.minimize"),
             accelerator: 'CmdOrCtrl+M',
             role: 'minimize'
           },
           {
-            label: '关闭',
+            label:  i18n.prop("menu.close"),
             accelerator: 'CmdOrCtrl+W',
             role: 'close'
           },
         ]
       },
       {
-        label: '帮助',
+        label: i18n.prop("menu.help"),
         role: 'help',
         submenu: [
           {
-            label: '了解Electron',
+            label: i18n.prop("menu.about-electron"),
             click: function() { require('electron').shell.openExternal('http://electron.atom.io') }
+          },
+          {
+            label: i18n.prop("menu.about-product"),
+            click: function(){
+                ipcRenderer.sendSync("sync-open-about");
+            }
           },
         ]
       },
