@@ -46,9 +46,9 @@ body{
     top: 0px;
     right: 0px;
     width:300px;
-    background-color: #333;
-    border-left: 3px solid #666;
-    box-shadow: 0px -2px 3px #000;
+    background-color: #1f1f1f;
+    border-left: 1px solid #303030;
+    box-shadow: -1px 0px 1px #000;
     height: 100%;
 }
 
@@ -77,7 +77,61 @@ body{
     width:0px;
     border-left:0px solid transparent;
 }
+#container #videolist-container .video-list-item{
+    height: auto;
+    color: #e9e9e9;
+    padding: 10px 15px;
+    position: relative;
+    left: 0px;
+    top:0px;
+    border-bottom: 1px solid #303030;
+    cursor: default;
+    font-size: 14px;
+    background-color: transparent;
+}
+#container #videolist-container .video-list-item:hover,
+#container #videolist-container .video-list-item.active:hover{
+    color: #446fbd;
+    cursor: pointer;
+}
+#container #videolist-container .video-list-item.active{
+    color: #446fbd;
+    background-color: rgba(0,0,0,0.2);
+}
+#container #videolist-container .video-list-item.disabled,
+#container #videolist-container .video-list-item.disabled:hover{
+    background-color: transparent;
+    color:rgba(200,200,200,0.2);
+}
 
+#container #videolist-container .video-list-item:hover .item-close{
+    display: inline-block;
+}
+#container #videolist-container .video-list-item .item-close{
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    height: 20px;
+    width: 20px;
+    color: #e9e9e9;
+    font-size: 18px;
+    margin-top: -10px;
+    cursor: pointer;
+    display: none;
+}
+#container #videolist-container .video-list-item .item-close:hover{
+     color: red;
+     font-weight: bold;
+}
+#container #videolist-container #videolist-controller-splitter {
+    position: absolute;
+    left: -5px;
+    width: 10px;
+    top: 0px;
+    height: 100%;
+    background-color: transparent;
+    cursor: ew-resize;
+}
 
 #controller{
     position:absolute;
@@ -158,7 +212,7 @@ body{
     bottom: 0px;
     height: 50%;
     left: 0px;
-    background-color: darkcyan;
+    background-color: #446fbd;
     width: 10px;
 }
 #container #video-container #volume-container #volume-progress #volume-button{
@@ -220,7 +274,7 @@ body{
 }
 #controller #play-progress #timebar{
     width: 0%;
-    background-color: darkcyan;
+    background-color: #446fbd;
     height: 4px;
 }
 
@@ -237,58 +291,7 @@ body{
     border-radius: 18px;
     cursor: move;
 }
-#container #videolist-container .video-list-item{
-    height: auto;
-    color: #aaa;
-    padding: 10px 15px;
-    position: relative;
-    left: 0px;
-    top:0px;
-    margin-top: 3px;
-    border-bottom: 1px solid #555;
-    box-shadow: 0px 1px 2px #333;
-    cursor: default;
-}
-#container #videolist-container .video-list-item:hover,#container #videolist-container .video-list-item.active:hover{
-    background-color: rgba(215,235,255,0.3);
-    color: #333;
-}
-#container #videolist-container .video-list-item.active{
-    background-color: rgba(238,238,238,0.1);
-    color: #333;
-}
-#container #videolist-container .video-list-item.disabled,#container #videolist-container .video-list-item.disabled:hover{
-    background-color: transparent;
-    color:rgba(200,200,200,0.1);
-}
 
-#container #videolist-container .video-list-item:hover .item-close{
-    display: inline-block;
-}
-#container #videolist-container .video-list-item .item-close{
-    position: absolute;
-    right: 0px;
-    top: 50%;
-    height: 20px;
-    width: 20px;
-    color: #999;
-    font-size: 16px;
-    margin-top: -10px;
-    cursor: pointer;
-    display: none;
-}
-#container #videolist-container .video-list-item .item-close:hover{
-     color: #fff;
-}
-#container #videolist-container #videolist-controller-splitter {
-    position: absolute;
-    left: -5px;
-    width: 10px;
-    top: 0px;
-    height: 100%;
-    background-color: transparent;
-    cursor: ew-resize;
-}
 #container #video-container #flat-screen-container {
     position: absolute;
     top: 0px;

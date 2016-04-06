@@ -11,7 +11,13 @@
     <style>
         body{
             background-color: azure;
-            color:  brown;
+            color:  #446fbd;
+        }
+        
+        #video-url{
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
         }
         #btn-ok{
             margin: 20px 40px;
@@ -20,7 +26,19 @@
             font-size: 14px;
             padding: 6px 24px;
             cursor: pointer;
-            box-shadow: 1px 1px 3px black;
+            box-shadow: 1px 1px 2px black;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #btn-ok:hover{
+            background-color:seagreen;
+        }
+        #btn-ok:active{
+            box-shadow: 0px 0px 1px black;
+        }
+        #text-container{
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         #btn-container{
             text-align: center;
@@ -28,7 +46,9 @@
     </style>
   </head>
   <body>
-    <input id="video-url" type="text" placehodler="请输入视频地址" />
+    <div id="text-container">
+        <input id="video-url" type="text" placeholder="请输入视频地址" />
+    </div>
     <div id="btn-container">
         <a role="button" id="btn-ok"></a>
     </div>

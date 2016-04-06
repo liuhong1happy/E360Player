@@ -35,9 +35,13 @@ var PlayerStorage = {
         var json = window.localStorage.getItem("playlist");
         var playlist = json==null ?[]:JSON.parse(json);
         for(var i=0;i<playlist.length;i++){
+            
             var file_info = ipcRenderer.sendSync("sync-file-info",playlist[i].src);
-            playlist[i].exist = file_info.exist;
-            if(file_info.exist){
+            
+            if(playlist[i].online) playlist[i].exist = true;
+            else playlist[i].exist = file_info.exist;
+            
+            if(file_info.exist && !playlist[i].online){
                 playlist[i].name = file_info.name;
                 playlist[i].size = file_info.size;
             }
