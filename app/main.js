@@ -148,6 +148,13 @@ ipcMain.on("sync-open-lang",function(event,arg){
     event.returnValue = true;
 })
 
+global.renderEventArgs = {
+    online:{
+        key:new Date().valueOf(),
+        value:null
+    }
+}
+
 ipcMain.on('sync-open-video-by-url',function(event,arg){
     var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
     if(langWin.setMenu) langWin.setMenu(null);
@@ -157,6 +164,11 @@ ipcMain.on('sync-open-video-by-url',function(event,arg){
 
 ipcMain.on("async-open-video-by-url",function(event,arg){
     event.sender.send('replay-open-video-by-url',arg);
+    
+    global.renderEventArgs.online = {
+        key:new Date().valueOf(),
+        value:arg
+    } 
     
     var windows = BrowserWindow.getAllWindows();
     for(var i=0;i<windows.length;i++){

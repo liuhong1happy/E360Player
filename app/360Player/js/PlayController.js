@@ -124,6 +124,7 @@ var PlayController = function(){
         window.onresize = function(){
             player.resize($videoContainer.width(),$videoContainer.height());
         }
+        player.addEventListener("rendering",this.onrendering)
         player.addEventListener("playing",this.onplaying)
         player.addEventListener("ended",this.onended)
         self.player = player;
@@ -812,7 +813,44 @@ var PlayController = function(){
         self.initLoopType();
         self.initFlatScreen();
     }
-    
+    this.renderEventArgs ={
+        "online":{
+            key:new Date().valueOf(),
+            value:null
+        }
+    }
+    this.onrendering = function(video){
+        var globalEventArgs = remote.getGlobal('renderEventArgs');
+        if( (self.renderEventArgs.online && globalEventArgs.online) 
+           && (self.renderEventArgs.online.key != globalEventArgs.online.key) 
+           && globalEventArgs.online.value){
+                // open online 
+                self.renderEventArgs.online.key = globalEventArgs.online.key;
+                self.renderEventArgs.online.value = globalEventArgs.online.value;
+                var arg = globalEventArgs.online.value;
+                var splits = arg.split("/");
+                if(splits.length>1){
+                    var name = splits[splits.length-1];
+                    var nameSplits = name.split(".");
+                    var extname ="."+nameSplits[nameSplits.length-1];
+                    if(extname.toUpperCase() !=".MP4"){
+                        alert("视频不是可播放的视频类型");
+                    }else{
+                        controller.addVideoToList({
+                            src:arg,
+                            name:name,
+                            extname:extname,
+                            size:0,
+                            exist:true,
+                            online:true
+                        });
+                    }
+                }
+                else{
+                    alert("视频地址不合法");
+                }
+        }
+    }
     this.onplaying = function(video){
         var duration = self.player.getVideoDuration();
         var currentTime = self.player.getVideoCurrentTime();

@@ -295,27 +295,3 @@ var createMenu = function(){
         }
     }
 }
-
-ipcRenderer.on("replay-open-video-by-url",function(event,arg){
-    var splits = arg.split("/");
-    if(splits.length>1){
-        var name = splits[splits.length-1];
-        var nameSplits = name.split(".");
-        var extname ="."+nameSplits[nameSplits.length-1];
-        if(extname.toUpperCase() !=".MP4"){
-            alert("视频不是可播放的视频类型");
-        }else{
-            controller.addVideoToList({
-                src:arg,
-                name:name,
-                extname:extname,
-                size:0,
-                exist:true,
-                online:true
-            });
-        }
-    }else{
-        alert("视频地址不合法");
-    }
-    
-})

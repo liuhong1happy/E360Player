@@ -102,6 +102,7 @@ var E360Palyer = function(parentDomElement,videoSrc){
         };
 
         var animation = function(){
+            if(events.rendering) events.rendering(video);
             if(events.playing && !pauseVideo)  events.playing(video);
             if(requestAnimationFrame){
                 requestAnimationFrame(animation);
@@ -208,6 +209,9 @@ var E360Palyer = function(parentDomElement,videoSrc){
             },
             addEventListener:function(type,callback){
                 switch(type){
+                    case "rendering":
+                        events.rendering = callback;
+                        break;
                     case "playing":
                         events.playing = callback;
                         break;
