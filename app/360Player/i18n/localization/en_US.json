@@ -27,6 +27,8 @@
         "toggle-play":"Toggle Play/Pause",
         "next-video":"Next Video",
         "prev-video":"Prev Video",
+        "fast-forward-video":"Fast Forward Video",
+        "fast-backward-video":"Fast Backward Video",
         "edit":"Edit",
         "undo":"Undo",
         "redo":"Redo",

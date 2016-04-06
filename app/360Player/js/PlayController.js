@@ -1010,6 +1010,38 @@ var PlayController = function(){
         var index = $(target).attr("data-index");
         controller.playVideoByIndex(index);
     }
+    
+    this.fastBackwardVideo = function(){
+        var duration = self.player.getVideoDuration();
+        var currentTime = self.player.getVideoCurrentTime();
+        if(duration>3600){
+            currentTime -= duration/60;
+        }else if(duration>60){
+            currentTime -= duration/20;
+        }else{
+            currentTime -= duration/10;
+        }
+        if(currentTime<0){
+            currentTime = 0;
+        }
+        self.player.setVideoCurrentTime(currentTime);
+    }
+    this.fastForwardVideo = function(){
+        var duration = self.player.getVideoDuration();
+        var currentTime = self.player.getVideoCurrentTime();
+        if(duration>3600){
+            currentTime += duration/60;
+        }
+        else if(duration>60){
+            currentTime += duration/30;
+        }else{
+            currentTime += duration/10;
+        }
+        if(currentTime<0){
+            currentTime = 0;
+        }
+        self.player.setVideoCurrentTime(currentTime);
+    }
     self = this;
     return this;
 }

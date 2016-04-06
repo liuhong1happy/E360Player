@@ -27,6 +27,8 @@
         "toggle-play":"暂停/播放",
         "next-video":"下一视频",
         "prev-video":"上一视频",
+        "fast-forward-video":"快进",
+        "fast-backward-video":"快退",
         "edit":"编辑",
         "undo":"撤销",
         "redo":"重做",

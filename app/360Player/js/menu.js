@@ -42,7 +42,7 @@ var createMenu = function(){
                 }
             ]
         },
-      {
+        {
         label:  i18n.prop("menu.play-control"),
         submenu: [
           {
@@ -66,9 +66,26 @@ var createMenu = function(){
                controller.playNextVideo();
             }
           },
+          {
+             type: 'separator'
+          },
+          {
+            label:  i18n.prop("menu.fast-backward-video"),
+            accelerator: 'Left',
+            click: function(item, focusedWindow) {
+               controller.fastBackwardVideo();
+            }
+          },
+          {
+            label:  i18n.prop("menu.fast-forward-video"),
+            accelerator: 'Right',
+            click: function(item, focusedWindow) {
+               controller.fastForwardVideo();
+            }
+          }
         ]
       },
-      {
+        {
         label:  i18n.prop("menu.edit"),
         submenu: [
           {
@@ -106,7 +123,7 @@ var createMenu = function(){
           },
         ]
       },
-      {
+        {
         label: i18n.prop("menu.view"),
         submenu: [
           {
@@ -187,7 +204,7 @@ var createMenu = function(){
           },
         ]
       },
-      {
+        {
         label:  i18n.prop("menu.window"),
         role: 'window',
         submenu: [
@@ -203,7 +220,7 @@ var createMenu = function(){
           },
         ]
       },
-      {
+        {
         label: i18n.prop("menu.help"),
         role: 'help',
         submenu: [
