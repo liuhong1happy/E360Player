@@ -2,6 +2,10 @@
 
 `E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).
 
+## Screenshot
+
+![Screenshot](screenshot.png)
+
 ## Download
 
 [百度云盘](http://pan.baidu.com/s/1RuHjg)
