@@ -2,11 +2,6 @@
 
 `E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).
 
-## Roadmap
-
-- [x] localization
-- [x] play online video
-
 ## Download
 
 [百度云盘](http://pan.baidu.com/s/1RuHjg)
@@ -31,6 +26,13 @@
         npm run pack-linux
 
 ## Changelog
+
+#### v0.6.0
+
+- [x] localization
+- [x] play online video
+- [x] fix issue [#4](https://github.com/liuhong1happy/E360Player/issues/4)
+- [x] fix issue [#5](https://github.com/liuhong1happy/E360Player/issues/4)
 
 #### v0.5.0
 
