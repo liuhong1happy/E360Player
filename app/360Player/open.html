@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>打开视频地址</title>
+    <title></title> 
     <script>
         const electron = require('electron');
         const ipcRenderer = electron.ipcRenderer;
@@ -47,7 +47,7 @@
   </head>
   <body>
     <div id="text-container">
-        <input id="video-url" type="text" placeholder="请输入视频地址" />
+        <input id="video-url" type="text"/>
     </div>
     <div id="btn-container">
         <a role="button" id="btn-ok"></a>
@@ -56,6 +56,9 @@
         // init i18n
         i18n.init();  
         var videoUrl = document.getElementById("video-url");
+        videoUrl.placeholder = i18n.prop('open-video-by-url.placeholder-input');
+        
+        document.title = i18n.prop('menu.open-video-by-url');
         
         document.getElementById("btn-ok").innerHTML = i18n.prop("switch-language.btn-ok");
         // ok
@@ -63,7 +66,7 @@
             if(videoUrl.value!=""){
                 ipcRenderer.send("async-open-video-by-url",videoUrl.value);
             }else{
-                alert("输入框不能为空");
+                alert(i18n.prop('open-video-by-url.require-input'));
             }
         }
     </script>

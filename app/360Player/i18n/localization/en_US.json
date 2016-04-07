@@ -16,13 +16,16 @@
         "prev-video":"Prev Video",
         "loop-control":"Loop Type:",
         "pause":"Pause",
-        "play":"Play"
+        "play":"Play",
+        "window-control":"Window Control" ,
+        "fullscreen":"Fullscreen",
+        "restore":"Restore"
     },
     "menu":{
         "file":"File",
         "open-video":"Open Video",
         "open-video-by-url":"Open Online Video",
-        "exit":"Exit",
+        "quit":"Quit",
         "play-control":"Play Control",
         "toggle-play":"Toggle Play/Pause",
         "next-video":"Next Video",
@@ -48,9 +51,23 @@
         "close":"Close",
         "help":"Help",
         "about-product":"About Product",
-        "about-electron":"About Electron"
+        "about-electron":"About Electron",
+        "services":"Services",
+        "hide-player":"Hide Player",
+        "hide-others":"Hide Others",
+        "show-all":"Show All"
     },
     "switch-language":{
         "btn-ok":"OK"
+    },
+    "open-video-by-url":{
+        "btn-ok":"OK",
+        "require-input":"please input value.",
+        "placeholder-input":"please input video url."
+    },
+    "async-app-quit":{
+        "title":"Question",
+        "message":"Are you sure to quit the application？",
+        "buttons": ["Ok","Cancel"]
     }
 }

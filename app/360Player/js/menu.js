@@ -28,7 +28,7 @@ var createMenu = function(){
                 {
                     label: i18n.prop("menu.open-video-by-url"),
                     accelerator: 'CmdOrCtrl+U',
-                    click: function(){
+                    click: function(item,focusedWindow){
                         ipcRenderer.sendSync("sync-open-video-by-url");
                     }
                 },
@@ -36,9 +36,11 @@ var createMenu = function(){
                     type: 'separator'
                 },
                 {
-                    label: i18n.prop("menu.exit"),
+                    label: i18n.prop("menu.quit"),
                     accelerator: 'CmdOrCtrl+W',
-                    role: 'close'
+                    click:function(item,focusedWindow){
+                        ipcRenderer.send('async-app-quit',  i18n.prop('async-app-quit') ); 
+                    }
                 }
             ]
         },
@@ -124,85 +126,69 @@ var createMenu = function(){
         ]
       },
         {
-        label: i18n.prop("menu.view"),
-        submenu: [
-          {
-            label: i18n.prop("menu.reload"),
-            accelerator: 'CmdOrCtrl+R',
-            click: function(item, focusedWindow) {
-              if (focusedWindow)
-                focusedWindow.reload();
-            }
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label: i18n.prop("menu.switch-language"),
-            click: function(){
-                ipcRenderer.sendSync("sync-open-lang");
-            }
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label: i18n.prop("menu.toggle-fullscreen"),
-            accelerator: (function() {
-              if (process.platform == 'darwin')
-                return 'Ctrl+Command+F';
-              else
-                return 'F11';
-            })(),
-            click: function(item, focusedWindow) {
-                  console.log(item);
+            label: i18n.prop("menu.view"),
+            submenu: [
+              {
+                label: i18n.prop("menu.reload"),
+                accelerator: 'CmdOrCtrl+R',
+                click: function(item, focusedWindow) {
                   if (focusedWindow)
-                        controller.setFullScreen(focusedWindow.isFullScreen());
-                        focusedWindow.setMenuBarVisibility(focusedWindow.isFullScreen());
-                        focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-                  }
-          },
-          {
-            label: i18n.prop("menu.toggle-devtools"),
-            accelerator: (function() {
-              if (process.platform == 'darwin')
-                return 'Alt+Command+I';
-              else
-                return 'Ctrl+Shift+I';
-            })(),
-            click: function(item, focusedWindow) {
-              if (focusedWindow)
-                focusedWindow.toggleDevTools();
-            }
-          },
-          {
-            type: 'separator'
-          },
-          {
-            label:  i18n.prop("menu.toggle-playlist"),
-            accelerator: (function() {
-              if (process.platform == 'darwin')
-                return 'Alt+Command+H';
-              else
-                return 'Ctrl+Shift+H';
-            })(),
-            click: function(item, focusedWindow) {
-                controller.togglePlayList();
-            }
-          },          
-          {
-            label:   i18n.prop("menu.toggle-flatscreen"),
-            accelerator: (function() {
-              if (process.platform == 'darwin')
-                return 'Alt+Command+J';
-              else
-                return 'Ctrl+Shift+J';
-            })(),
-            click: function(item, focusedWindow) {
-                controller.toggleFlatScreen();
-            }
-          },
-        ]
+                    focusedWindow.reload();
+                }
+              },
+              {
+                type: 'separator'
+              },
+              {
+                label: i18n.prop("menu.switch-language"),
+                click: function(){
+                    ipcRenderer.sendSync("sync-open-lang");
+                }
+              },
+              {
+                type: 'separator'
+              },
+              {
+                label: i18n.prop("menu.toggle-devtools"),
+                accelerator: (function() {
+                  if (process.platform == 'darwin')
+                    return 'Alt+Command+I';
+                  else
+                    return 'Ctrl+Shift+I';
+                })(),
+                click: function(item, focusedWindow) {
+                  if (focusedWindow)
+                    focusedWindow.toggleDevTools();
+                }
+              },
+              {
+                type: 'separator'
+              },
+              {
+                label:  i18n.prop("menu.toggle-playlist"),
+                accelerator: (function() {
+                  if (process.platform == 'darwin')
+                    return 'Alt+Command+H';
+                  else
+                    return 'Ctrl+Shift+H';
+                })(),
+                click: function(item, focusedWindow) {
+                    controller.togglePlayList();
+                }
+              },          
+              {
+                label:   i18n.prop("menu.toggle-flatscreen"),
+                accelerator: (function() {
+                  if (process.platform == 'darwin')
+                    return 'Alt+Command+J';
+                  else
+                    return 'Ctrl+Shift+J';
+                })(),
+                click: function(item, focusedWindow) {
+                    controller.toggleFlatScreen();
+                }
+              },
+            ]
       },
         {
         label:  i18n.prop("menu.window"),
@@ -212,12 +198,22 @@ var createMenu = function(){
             label:   i18n.prop("menu.minimize"),
             accelerator: 'CmdOrCtrl+M',
             role: 'minimize'
-          },
+           },
           {
-            label:  i18n.prop("menu.close"),
-            accelerator: 'CmdOrCtrl+W',
-            role: 'close'
-          },
+                label: i18n.prop("menu.toggle-fullscreen"),
+                accelerator: (function() {
+                  if (process.platform == 'darwin')
+                    return 'Ctrl+Command+F';
+                  else
+                    return 'F11';
+                })(),
+                click: function(item, focusedWindow) {
+                      if (focusedWindow)
+                            controller.setFullScreen(focusedWindow.isFullScreen());
+                            focusedWindow.setMenuBarVisibility(focusedWindow.isFullScreen());
+                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+                      }
+              },
         ]
       },
         {
@@ -226,11 +222,11 @@ var createMenu = function(){
         submenu: [
           {
             label: i18n.prop("menu.about-electron"),
-            click: function() { require('electron').shell.openExternal('http://electron.atom.io') }
+            click: function(item, focusedWindow) { require('electron').shell.openExternal('http://electron.atom.io') }
           },
           {
             label: i18n.prop("menu.about-product"),
-            click: function(){
+            click: function(item, focusedWindow){
                 ipcRenderer.sendSync("sync-open-about");
             }
           },
@@ -238,19 +234,21 @@ var createMenu = function(){
       },
     ];
     if (process.platform == 'darwin') {
-      var name = 'E360Player';
+      var name = i18n.prop('title');
       template.unshift({
         label: name,
         submenu: [
           {
-            label: 'About ' + name,
-            role: 'about'
+            label: i18n.prop("menu.about-product"),
+            click: function(item, focusedWindow){
+                ipcRenderer.sendSync("sync-open-about");
+            }
           },
           {
             type: 'separator'
           },
           {
-            label: 'Services',
+            label: i18n.prop('menu.services'),
             role: 'services',
             submenu: []
           },
@@ -258,29 +256,29 @@ var createMenu = function(){
             type: 'separator'
           },
           {
-            label: 'Hide ' + name,
+            label: i18n.prop('menu.hide-player'),
             accelerator: 'Command+H',
             role: 'hide'
           },
           {
-            label: 'Hide Others',
+            label: i18n.prop('menu.hide-others'),
             accelerator: 'Command+Alt+H',
             role: 'hideothers'
           },
           {
-            label: 'Show All',
+            label: i18n.prop('menu.show-all'),
             role: 'unhide'
           },
           {
             type: 'separator'
           },
           {
-            label: 'Quit',
+            label: i18n.prop('menu.quit'),
             accelerator: 'Command+Q',
-            click: function() { 
-                ipcRenderer.send('async-app-quit', null); 
+            click: function(item, focusedWindow) { 
+                ipcRenderer.send('async-app-quit',  i18n.prop('async-app-quit') ); 
             }
-          },
+          }
         ]
       });
       // Window menu.

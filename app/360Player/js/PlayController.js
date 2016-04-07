@@ -65,8 +65,17 @@ var PlayerStorage = {
             listShow:true,
             flatShow:true
         }:JSON.parse(json);
+        currentplayer.loopName = i18n.prop("play-controller.loop-types."+currentplayer.loopType);
         return currentplayer;
     },
+    setCurrentVideo:function(currentvideo){
+        window.localStorage.setItem("currentvideo",JSON.stringify(currentvideo));
+    },
+    getCurrentVideo:function(){
+        var json = window.localStorage.getItem("currentvideo");
+        var currentvideo = json==null?{}:JSON.parse(json);
+        return currentvideo;
+    }
 }
 
 var ToolTip = function(options){
@@ -106,14 +115,7 @@ var PlayController = function(){
     ]
     this.current = {
         index:0,
-        video:{
-            name:"L2_1920_3_25.mp4",
-            src:"http://cache.utovr.com/s1hevpqyxzguso2zfs/L2_1920_3_25.mp4",
-            size:0,
-            online:true,
-            extname:".mp4",
-            exist:true
-        },
+        video:PlayerStorage.getCurrentVideo(),
         player:PlayerStorage.getCurrentPlayer()
     };
     this.player = null;
@@ -122,6 +124,7 @@ var PlayController = function(){
         player.init();
         if(self.current.video && self.current.video.src){
             player.setVideoSrc(self.current.video.src);
+            player.setVideoCurrentTime(self.current.video.currentTime)
         }
         player.resize($videoContainer.width(),$videoContainer.height());
         player.play();
@@ -144,7 +147,7 @@ var PlayController = function(){
             self.playNextVideo();
             var tooltip = new ToolTip();
             tooltip.show({
-                content: i18n.prop("play-controller.play-control") +"<span style='color:darkcyan;'>"+i18n.prop("play-controller.next-video")+"</span>"
+                content: i18n.prop("play-controller.play-control") +"<span style='color:#446fbd;'>"+i18n.prop("play-controller.next-video")+"</span>"
             })
             tooltip.hide();
         })
@@ -152,7 +155,7 @@ var PlayController = function(){
             self.playPrevVideo();
             var tooltip = new ToolTip();
             tooltip.show({
-                content: i18n.prop("play-controller.play-control") + "<span style='color:darkcyan;'>"+i18n.prop("play-controller.prev-video")+"</span>"
+                content: i18n.prop("play-controller.play-control") + "<span style='color:#446fbd;'>"+i18n.prop("play-controller.prev-video")+"</span>"
             })
             tooltip.hide();
         })
@@ -305,11 +308,7 @@ var PlayController = function(){
             $iconNext.addClass("disabled");
             $iconPrevious.addClass("disabled");
         }
-        
 
-        
-
-        
         if(self.playlist.length>0){
             var index = 0;
             for(var i=0;i<self.playlist.length;i++){
@@ -601,7 +600,7 @@ var PlayController = function(){
         $loopButton.attr("title",player.loopName);
         var tooltip = new ToolTip();
         tooltip.show({
-            content:i18n.prop("play-controller.loop-control")+ "<span style='color:darkcyan;'>"+player.loopName+"</span>"
+            content:i18n.prop("play-controller.loop-control")+ "<span style='color:#446fbd;'>"+player.loopName+"</span>"
         })
         tooltip.hide();
         self.saveStorage();
@@ -634,7 +633,7 @@ var PlayController = function(){
         var paused = self.player.getVideoPaused();
         var tooltip = new ToolTip();
         tooltip.show({
-            content: i18n.prop("play-controller.play-control") + "<span style='color:darkcyan;'>"+(paused? i18n.prop("play-controller.pause"):i18n.prop("play-controller.play"))+"</span>"
+            content: i18n.prop("play-controller.play-control") + "<span style='color:#446fbd;'>"+(paused? i18n.prop("play-controller.pause"):i18n.prop("play-controller.play"))+"</span>"
         })
         tooltip.hide();
     }
@@ -807,6 +806,11 @@ var PlayController = function(){
             $videoList.hide();
             $videoContainer.css({"width":"100%"});
         }
+        var tooltip = new ToolTip();
+        tooltip.show({
+            content: i18n.prop("play-controller.window-control") + "<span style='color:#446fbd;'>"+(flag? i18n.prop("play-controller.restore"):i18n.prop("play-controller.fullscreen"))+"</span>"
+        })
+        tooltip.hide();
     }
     
     this.init = function(){
@@ -917,6 +921,7 @@ var PlayController = function(){
                 }
             }
         }
+        self.saveStorage();
     }
     this.onended = function(){
         var existPlayList = self.playlist.filter(function(ele,pos){
@@ -976,6 +981,7 @@ var PlayController = function(){
     this.saveStorage = function(){
         PlayerStorage.setPlayList(self.playlist);
         PlayerStorage.setCurrentPlayer(self.current.player);
+        PlayerStorage.setCurrentVideo(self.current.video);
     }
     this.handleDragStart = function(e){
             e = e || event;

@@ -16,13 +16,16 @@
         "prev-video":"上一视频",
         "loop-control":"循环播放方式切换为",
         "pause":"暂停",
-        "play":"播放"
+        "play":"播放",
+        "window-control":"窗体控制" ,
+        "fullscreen":"全屏",
+        "restore":"还原"
     },
     "menu":{
         "file":"文件",
         "open-video":"打开视频",
         "open-video-by-url":"打开在线视频",
-        "exit":"退出",
+        "quit":"退出",
         "play-control":"播放控制",
         "toggle-play":"暂停/播放",
         "next-video":"下一视频",
@@ -48,9 +51,23 @@
         "close":"关闭",
         "help":"帮助",
         "about-product":"关于产品",
-        "about-electron":"关于Electron"
+        "about-electron":"关于Electron",
+        "services":"服务",
+        "hide-player":"隐藏播放器",
+        "hide-others":"隐藏其它",
+        "show-all":"全部显示"
     },
     "switch-language":{
         "btn-ok":"确定"
+    },
+    "open-video-by-url":{
+        "btn-ok":"确定",
+        "require-input":"输入框不能为空",
+        "placeholder-input":"请输入视频地址"
+    },
+    "async-app-quit":{
+        "title":"询问",
+        "message":"确定要退出吗？",
+        "buttons": ["确定","取消"]
     }
 }

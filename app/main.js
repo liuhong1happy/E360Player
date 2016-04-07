@@ -14,7 +14,7 @@ const ipcMain = electron.ipcMain;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-var icon_path = path.join(__dirname, 'logo.jpg');
+var icon_path = path.join(__dirname, 'logo.png');
 if (process.platform == 'darwin') {
     app.dock.setIcon(icon_path);
 }
@@ -36,10 +36,10 @@ function createWindow () {
 
   // Emitted when the window is closed.
   mainWindow.on("close",function(event){
-        var ok = dialog.showMessageBox({type:"question",title:"询问",message:"确定要退出吗？",buttons:["确定","取消"],defaultId:0,cancelId:1});
-        if(ok==1){
-            event.preventDefault();
-        }
+//        var ok = dialog.showMessageBox({type:"question",title:"询问",message:"确定要退出吗？",buttons:["确定","取消"],defaultId:0,cancelId:1});
+//        if(ok==1){
+//            event.preventDefault();
+//        }
       
   })
   mainWindow.on('closed', function() {
@@ -90,8 +90,14 @@ ipcMain.on('sync-open-file', function(event, arg) {
 });
 
 ipcMain.on('async-app-quit', function(event, arg) {
-    dialog.showMessageBox({type:"question",title:"询问",message:"确定要退出吗？",buttons:["确定","取消"],defaultId:0,cancelId:1},function(ok){
-        if(ok==0) app.quit();
+    dialog.showMessageBox({type:"question",title:arg.title,message:arg.message,buttons:arg.buttons,defaultId:0,cancelId:1},function(ok){
+        if(ok==0){
+            var windows = BrowserWindow.getAllWindows();
+            for(var i=0;i<windows.length;i++){
+                windows[i].close();
+            }
+            app.quit();
+        }
         event.sender.send('async-app-quit-reply',ok);
     });
 });
