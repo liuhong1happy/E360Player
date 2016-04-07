@@ -191,3 +191,8 @@ ipcMain.on('change-language',function(event,arg){
     event.returnValue = true;
 })
 
+ipcMain.on("sync-localization-path",function(event,arg){
+    // win7 bug
+    event.returnValue =  __dirname + '/360Player/i18n/localization';
+})
+
