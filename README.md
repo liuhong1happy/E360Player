@@ -8,7 +8,7 @@
 
 ## Download
 
-[百度云盘](http://pan.baidu.com/s/1RuHjg)
+[百度云盘](http://pan.baidu.com/s/1dFfRwyd)
 
 ## Quick start
 
