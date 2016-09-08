@@ -1,5 +1,9 @@
 ## Changelog
 
+#### v0.7.0
+
+- [x] update electron version to 1.3.5
+
 #### v0.6.1
 
 - [x] fix issue [#6](https://github.com/liuhong1happy/E360Player/issues/6)
