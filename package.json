@@ -1,37 +1,23 @@
 {
-  "license": "MIT",
-  "private": true,
+  "name": "@17ued/e360player",
+  "version": "1.0.0",
+  "description": "`E360Player` is the `360° Video Player ` with [electron](https://github.com/atom/electron).",
+  "main": "index.js",
   "scripts": {
-    "start": "electron ./app/main.js",
-    "pack-osx": "electron-packager ./app E360Player --platform=darwin --arch=x64 --version=0.36.9",
-    "pack-win32": "electron-packager ./app E360Player --platform=win32 --arch=ia32 --version=0.36.9",
-    "pack-win64": "electron-packager ./app E360Player --platform=win32 --arch=x64 --version=0.36.9",
-    "pack-linux": "electron-packager ./app E360Player --platform=linux --arch=x64 --version=0.36.9",
-    "postinstall": "install-app-deps",
-    "pack": "build",
-    "dist": "build",
-    "release": "build"
+    "start": "electron ./app/main.js --inspect",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "build": {
-    "osx": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liuhong1happy/E360Player.git"
   },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liuhong1happy/E360Player/issues"
+  },
+  "homepage": "https://github.com/liuhong1happy/E360Player#readme",
   "devDependencies": {
-    "electron": "^1.6.10",
-    "electron-builder": "^18.2.2",
-    "electron-packager": "^8.7.0"
+    "electron": "^5.0.1"
   }
 }

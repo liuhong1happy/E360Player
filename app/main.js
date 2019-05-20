@@ -22,7 +22,15 @@ if (process.platform == 'darwin') {
 function createWindow () {
   // Create the browser window.
   
-  mainWindow = new BrowserWindow({width: 1200, height: 800,icon:icon_path,darkTheme:true});
+  mainWindow = new BrowserWindow({
+      width: 1200, 
+      height: 800,
+      icon:icon_path,
+      darkTheme:true,
+      webPreferences: {
+          nodeIntegration: true,
+      }
+  });
 
   // and load the index.html of the app.
 
@@ -141,14 +149,36 @@ ipcMain.on("sync-read-jsonfile",function(event,arg){
 })
 
 ipcMain.on("sync-open-about",function(event,arg){
-    var aboutWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
+    var aboutWin = new BrowserWindow({
+        width: 360, 
+        height: 200,
+        darkTheme:true,
+        minimizable:false,
+        maximizable:false,
+        fullscreenable:false,
+        resizable:false,
+        webPreferences: {
+            nodeIntegration: true,
+        }
+    });
     if(aboutWin.setMenu) aboutWin.setMenu(null);
     aboutWin.loadURL('file://' + __dirname + '/360Player/about.html');
     event.returnValue = true;
 })
 
 ipcMain.on("sync-open-lang",function(event,arg){
-    var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
+    var langWin = new BrowserWindow({
+        width: 360, 
+        height: 200,
+        darkTheme:true,
+        minimizable:false,
+        maximizable:false,
+        fullscreenable:false,
+        resizable:false,
+        webPreferences: {
+            nodeIntegration: true,
+        }
+    });
     if(langWin.setMenu) langWin.setMenu(null);
     langWin.loadURL('file://' + __dirname + '/360Player/language.html');
     event.returnValue = true;
@@ -162,7 +192,18 @@ global.renderEventArgs = {
 }
 
 ipcMain.on('sync-open-video-by-url',function(event,arg){
-    var langWin = new BrowserWindow({width: 360, height: 200,darkTheme:true,minimizable:false,maximizable:false,fullscreenable:false,resizable:false});
+    var langWin = new BrowserWindow({
+        width: 360, 
+        height: 200,
+        darkTheme:true,
+        minimizable:false,
+        maximizable:false,
+        fullscreenable:false,
+        resizable:false,
+        webPreferences: {
+            nodeIntegration: true,
+        }
+    });
     if(langWin.setMenu) langWin.setMenu(null);
     langWin.loadURL('file://' + __dirname + '/360Player/open.html');
     event.returnValue = true;
