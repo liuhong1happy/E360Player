@@ -5,3 +5,4 @@ E360Player-linux-x64
 E360Player-win32-x64
 E360Player-win32-ia32
 npm-debug.log
+dist/

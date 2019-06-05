@@ -17,9 +17,5 @@
   "bugs": {
     "url": "https://github.com/liuhong1happy/E360Player/issues"
   },
-  "homepage": "https://github.com/liuhong1happy/E360Player#readme",
-  "build": {
-    "app-bundle-id": "liuhong1happy",
-    "app-category-type": "public.app-category.video-player"
-  }
+  "homepage": "https://github.com/liuhong1happy/E360Player#readme"
 }
